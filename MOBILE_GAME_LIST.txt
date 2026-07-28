@@ -1,0 +1,39 @@
+A'S ARCADE GAMES — 36 UNIQUE MOBILE GAMES
+===============================================
+
+ 1. Snake — Grow by eating fruit without hitting walls or yourself.
+ 2. Brick Breaker — Bounce the ball, clear every brick, and protect the bottom of the screen.
+ 3. Pong Duel — A complete two-player paddle match with first-to-five scoring.
+ 4. Space Invaders — Defend Earth from marching alien formations and return fire.
+ 5. Asteroid Patrol — Rotate, thrust, and blast drifting asteroids in open space.
+ 6. Flappy Flight — Tap through narrow gaps while gravity pulls you downward.
+ 7. Dino Dash — Jump and duck over a changing desert obstacle course.
+ 8. Crossy Street — Cross lanes of traffic and rivers one careful step at a time.
+ 9. Maze Chase — Collect every pellet in a maze while avoiding roaming ghosts.
+10. Falling Blocks — Rotate and place tetrominoes to clear complete rows.
+11. Number Merge 2048 — Slide equal number tiles together to build the target tile.
+12. Memory Match — Flip cards and remember their positions to find every pair.
+13. Lights Out — Toggle connected lights until the entire board is dark.
+14. Minesweeper — Reveal safe squares using number clues and flag hidden mines.
+15. Mini Sudoku — Fill a 4×4 or 6×6 grid so every row, column, and region is valid.
+16. Tic-Tac-Toe — Play classic three-in-a-row against a computer opponent.
+17. Connect Four — Drop discs into columns and connect four in any direction.
+18. Reversi — Bracket opposing discs to flip them and control the board.
+19. Checkers — Move diagonally, capture by jumping, and crown kings.
+20. Battleship — Find and sink a hidden fleet on a coordinate grid.
+21. Simon Says — Watch an expanding light-and-sound pattern and repeat it.
+22. Whack-a-Mole — Hit popping targets quickly while avoiding decoys.
+23. Bubble Shooter — Aim colored bubbles to create clusters of three or more.
+24. Basketball Shot — Drag to set power and arc, then shoot through the hoop.
+25. Archery Range — Draw the bow and account for wind to hit moving targets.
+26. Mini Golf — Set shot direction and power to guide the ball around obstacles.
+27. Road Racer — Steer through traffic, collect fuel, and reach the finish.
+28. Soccer Showdown — Two players move, tackle, and kick toward opposite goals.
+29. Drawing Studio — Draw freely with multiple colors, brush sizes, undo, and clear.
+30. Trivia Quest — Answer varied questions across math, science, words, and geography.
+31. Tower Defense — Place towers along a route and stop waves from reaching the base.
+32. Platform Adventure — Run, jump, collect gems, and reach the exit platform.
+33. Sokoban — Push crates onto goals without trapping them against walls.
+34. Hangman — Guess letters to reveal a hidden word before mistakes run out.
+35. Blackjack — Build a hand near 21 while deciding when to hit or stand.
+36. Fruit Merge — Drop matching fruit so they combine into larger fruit.

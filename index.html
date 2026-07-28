@@ -10,16 +10,16 @@
   <title>A's Arcade Games — GitHub Mobile Edition</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=7.1">
+  <link rel="stylesheet" href="styles.css?v=8.0">
 </head>
 <body>
   <div id="toast" role="status" aria-live="polite"></div>
 
   <section id="authView" class="view active">
     <div class="auth-card glass">
-      <img class="main-logo" src="assets/logo.png" alt="A's Arcade logo">
+      <img id="mainLogo" class="main-logo" src="./assets/arcade-logo.png?v=8.0" alt="A's Arcade logo" width="500" height="500" onerror="this.onerror=null;this.src='./icons/icon-512.png?v=8.0'">
       <h1>A's Arcade Games</h1>
-      <p class="subtitle">GitHub Mobile Edition 7.1 • 190 touch-friendly arcade adaptations</p>
+      <p class="subtitle">GitHub Mobile Edition 8.0 • 36 genuinely different games</p>
       <div id="loginAvatarPreview" class="login-avatar-preview" aria-label="Selected player avatar"></div>
       <label>Player account
         <select id="accountSelect"></select>
@@ -60,7 +60,7 @@
 
     <main class="launcher-main">
       <div class="filters glass">
-        <input id="searchInput" type="search" placeholder="Search 190 games…" aria-label="Search games">
+        <input id="searchInput" type="search" placeholder="Search 36 games…" aria-label="Search games">
         <select id="categorySelect" aria-label="Game category"></select>
         <label class="check"><input id="favoritesOnly" type="checkbox"> Favorites</label>
       </div>
@@ -73,27 +73,30 @@
     <header class="game-header">
       <button id="backToLauncher">← Launcher</button>
       <div><h2 id="gameTitle">Game</h2><p id="gameLevelText">Level 1</p></div>
-      <button id="pauseBtn">Pause</button>
+      <div class="game-header-actions"><button id="controlsToggle" type="button">Touch Controls</button><button id="pauseBtn">Pause</button></div>
     </header>
     <div class="canvas-wrap">
       <canvas id="gameCanvas" width="900" height="540" aria-label="Game canvas"></canvas>
       <div id="gameOverlay" class="game-overlay hidden"></div>
     </div>
-    <div id="touchControls" class="touch-controls">
-      <div class="control-cluster p1-controls">
+    <div id="touchControls" class="touch-controls" aria-label="Touch game controls">
+      <div class="player-control-set p1-controls">
         <span class="cluster-label">PLAYER 1</span>
-        <button data-key="ArrowUp">▲</button>
-        <div><button data-key="ArrowLeft">◀</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button></div>
+        <div class="dpad">
+          <button data-key="ArrowUp" aria-label="Player 1 up">▲</button>
+          <div><button data-key="ArrowLeft" aria-label="Player 1 left">◀</button><button data-key="ArrowDown" aria-label="Player 1 down">▼</button><button data-key="ArrowRight" aria-label="Player 1 right">▶</button></div>
+        </div>
+        <div class="mini-actions"><button data-key="Space" class="action-a">A</button><button data-key="Enter" class="action-b">B</button></div>
       </div>
-      <div class="action-cluster">
-        <button data-key="Space" class="action-a">A<br><small>JUMP / FIRE</small></button>
-        <button data-key="Enter" class="action-b">B<br><small>ACTION</small></button>
-      </div>
-      <div class="control-cluster p2-controls">
+      <div class="player-control-set p2-controls">
         <span class="cluster-label">PLAYER 2</span>
-        <button data-key="KeyW">W</button>
-        <div><button data-key="KeyA">A</button><button data-key="KeyS">S</button><button data-key="KeyD">D</button></div>
+        <div class="dpad">
+          <button data-key="KeyW" aria-label="Player 2 up">W</button>
+          <div><button data-key="KeyA" aria-label="Player 2 left">A</button><button data-key="KeyS" aria-label="Player 2 down">S</button><button data-key="KeyD" aria-label="Player 2 right">D</button></div>
+        </div>
+        <div class="mini-actions"><button data-key="KeyF" class="action-a">A</button><button data-key="KeyG" class="action-b">B</button></div>
       </div>
+      <div class="touch-hint">Touch, keyboard, and supported gamepads work together.</div>
     </div>
     <article id="gameInstructions" class="instructions glass"></article>
   </section>
@@ -123,8 +126,9 @@
     <button id="saveAccountBtn" class="primary">Create Account</button>
   </dialog>
 
-  <script src="avatar.js?v=7.1"></script>
-  <script src="games.js?v=7.1"></script>
-  <script src="app.js?v=7.1"></script>
+  <script src="avatar.js?v=8.0"></script>
+  <script src="games.js?v=8.0"></script>
+  <script src="game-engines.js?v=8.0"></script>
+  <script src="app.js?v=8.0"></script>
 </body>
 </html>

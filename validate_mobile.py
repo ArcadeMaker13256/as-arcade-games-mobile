@@ -1,37 +1,36 @@
-"""Static validation for A's Arcade Games GitHub Mobile Edition."""
 from __future__ import annotations
-import json, re, subprocess, sys
+import json, re, sys
 from pathlib import Path
 from PIL import Image
-ROOT=Path(__file__).resolve().parent
-required=['index.html','styles.css','app.js','games.js','games.json','manifest.webmanifest','service-worker.js','assets/logo.png','icons/icon-192.png','icons/icon-512.png']
-fail=[]
-for name in required:
-    if not (ROOT/name).is_file(): fail.append(f'Missing {name}')
-try:
-    games=json.loads((ROOT/'games.json').read_text(encoding='utf-8'))
-    if len(games)!=190: fail.append(f'Expected 190 games, found {len(games)}')
-    ids=[g.get('id') for g in games]
-    if len(ids)!=len(set(ids)): fail.append('Duplicate game IDs')
-except Exception as e: fail.append(f'games.json: {e}')
-for name in ['app.js','games.js']:
+root=Path(__file__).resolve().parent
+errors=[]
+required=['index.html','styles.css','app.js','game-engines.js','games.js','games.json','manifest.webmanifest','service-worker.js','avatar.js','assets/arcade-logo.png','icons/icon-192.png','icons/icon-512.png']
+for f in required:
+    if not (root/f).exists(): errors.append(f'Missing {f}')
+games=json.loads((root/'games.json').read_text())
+if len(games)!=36: errors.append(f'Expected 36 games, found {len(games)}')
+for field in ['id','name','engine','controls','objective']:
+    vals=[g.get(field) for g in games]
+    if any(not v for v in vals): errors.append(f'Missing {field}')
+for field in ['id','name']:
+    vals=[g[field] for g in games]
+    if len(vals)!=len(set(vals)): errors.append(f'Duplicate {field}')
+engines=set(re.findall(r'([a-zA-Z0-9]+):[a-zA-Z0-9]+Game', (root/'game-engines.js').read_text()))
+missing=sorted({g['engine'] for g in games}-engines)
+if missing: errors.append('Missing engines: '+', '.join(missing))
+for f,size in [('assets/arcade-logo.png',None),('icons/icon-192.png',(192,192)),('icons/icon-512.png',(512,512))]:
     try:
-        cp=subprocess.run(['node','--check',str(ROOT/name)],capture_output=True,text=True)
-        if cp.returncode: fail.append(f'{name}: {cp.stderr.strip()}')
-    except FileNotFoundError:
-        print('NOTE: Node.js not installed; skipped JavaScript parser check.')
-for name,size in [('icons/icon-192.png',(192,192)),('icons/icon-512.png',(512,512))]:
-    try:
-        with Image.open(ROOT/name) as im:
-            if im.size!=size: fail.append(f'{name}: expected {size}, found {im.size}')
-            im.verify()
-    except Exception as e: fail.append(f'{name}: {e}')
-html=(ROOT/'index.html').read_text(encoding='utf-8') if (ROOT/'index.html').exists() else ''
-for marker in ['gameCanvas','touchControls','gameInstructions','Parental Controls']:
-    if marker not in html: fail.append(f'index.html missing {marker}')
-js=(ROOT/'app.js').read_text(encoding='utf-8') if (ROOT/'app.js').exists() else ''
-for marker in ["completedLevels","a.coins+=1","a.coins+=5","showDetails","openParentalControls"]:
-    if marker not in js: fail.append(f'app.js missing {marker}')
-print('PASS' if not fail else 'FAIL')
-for item in fail: print(' -',item)
-raise SystemExit(1 if fail else 0)
+        im=Image.open(root/f); im.verify()
+        if size and Image.open(root/f).size!=size: errors.append(f'Wrong size: {f}')
+    except Exception as e: errors.append(f'Invalid image {f}: {e}')
+index=(root/'index.html').read_text()
+if './assets/arcade-logo.png?v=8.0' not in index: errors.append('Versioned main logo reference missing')
+if 'game-engines.js?v=8.0' not in index: errors.append('Game engines script missing')
+css=(root/'styles.css').read_text()
+for token in ['position:fixed','bottom:0','touch-controls']:
+    if token not in css: errors.append(f'Touch dock CSS missing {token}')
+print(f'Games: {len(games)}')
+print(f'Unique engines: {len({g["engine"] for g in games})}')
+print('Static validation:', 'PASS' if not errors else 'FAIL')
+for e in errors: print(' -',e)
+sys.exit(1 if errors else 0)

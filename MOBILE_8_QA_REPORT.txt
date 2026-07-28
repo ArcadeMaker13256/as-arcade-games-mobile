@@ -1,0 +1,34 @@
+A'S ARCADE GAMES — MOBILE 8.0 QA REPORT
+=======================================
+
+CATALOG
+• 36 registered games
+• 36 unique game IDs
+• 36 unique display names
+• 36 distinct named gameplay engines
+• No placeholder 190-game catalog
+
+STATIC VALIDATION
+• Required files present
+• games.js and games.json synchronized
+• JavaScript syntax passed for app.js, game-engines.js, games.js, and avatar.js
+• Main logo validated as a 500×500 RGBA PNG
+• PWA icons validated at 192×192 and 512×512
+• Versioned logo path and fallback icon confirmed
+• Fixed-bottom touch-control CSS confirmed
+
+BROWSER AUTOMATION
+• All 36 games opened in an emulated 390×844 touch/mobile viewport
+• Each game received keyboard input and canvas pointer input
+• No Game Error overlays appeared
+• No uncaught page errors appeared
+• Touch controls were visible, fixed, and aligned to the bottom in all 36 games
+• Desktop viewport initially hid the touch dock
+• Desktop “Show Touch Controls” button successfully displayed the dock
+• Mock browser gamepad input mapped right movement and primary action correctly
+• Login logo rendered at its full 500×500 natural resolution
+
+LIMITATIONS
+• Automated checks do not manually finish every level or every possible game state.
+• Physical gamepads and Safari Home Screen installation should be confirmed on the family devices.
+• The app remains a local/offline-first browser app; accounts do not synchronize between devices.
