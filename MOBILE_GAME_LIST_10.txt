@@ -1,0 +1,153 @@
+A'S ARCADE GAMES MOBILE 10 — GAME LIST
+================================================
+
+01. Snake — Arcade — 40-level campaign
+    Objective: Reach the target length.
+02. Brick Breaker — Arcade — 40-level campaign
+    Objective: Break every brick before losing all balls.
+03. Pong Duel — Multiplayer — 10 levels / open play
+    Objective: Score five points before the other player.
+04. Space Invaders — Shooter — 40-level campaign
+    Objective: Destroy every invader before they land.
+05. Asteroid Patrol — Shooter — 40-level campaign
+    Objective: Clear the asteroid field.
+06. Flappy Flight — Arcade — 40-level campaign
+    Objective: Pass the required number of gaps.
+07. Dino Dash — Arcade — 40-level campaign
+    Objective: Reach the finish marker.
+08. Crossy Street — Adventure — 40-level campaign
+    Objective: Reach the far side safely.
+09. Maze Chase — Adventure — 40-level campaign
+    Objective: Clear all pellets.
+10. Falling Blocks — Puzzle — 40-level campaign
+    Objective: Clear the target number of lines.
+11. Number Merge 2048 — Puzzle — 40-level campaign
+    Objective: Create the level’s target tile.
+12. Memory Match — Puzzle — 40-level campaign
+    Objective: Match every pair.
+13. Lights Out — Puzzle — 40-level campaign
+    Objective: Turn off every light.
+14. Minesweeper — Puzzle — 40-level campaign
+    Objective: Reveal all non-mine cells.
+15. Mini Sudoku — Puzzle — 40-level campaign
+    Objective: Fill every blank correctly.
+16. Tic-Tac-Toe — Strategy — 40-level campaign
+    Objective: Make three X marks in a line.
+17. Connect Four — Strategy — 40-level campaign
+    Objective: Connect four before the computer.
+18. Reversi — Strategy — 40-level campaign
+    Objective: Finish with more discs than the computer.
+19. Checkers — Strategy — 40-level campaign
+    Objective: Capture all computer pieces.
+20. Battleship — Strategy — 40-level campaign
+    Objective: Sink every ship within the shot limit.
+21. Simon Says — Casual — 40-level campaign
+    Objective: Repeat the full target sequence.
+22. Whack-a-Mole — Casual — 40-level campaign
+    Objective: Reach the target score before time expires.
+23. Bubble Shooter — Puzzle — 40-level campaign
+    Objective: Clear the required number of bubbles.
+24. Basketball Shot — Sports — 40-level campaign
+    Objective: Score the required baskets within the shot limit.
+25. Archery Range — Sports — 40-level campaign
+    Objective: Earn the required target score.
+26. Mini Golf — Sports — 40-level campaign
+    Objective: Sink the ball near or under par.
+27. Road Racer — Racing — 40-level campaign
+    Objective: Reach the finish with fuel remaining.
+28. Soccer Showdown — Multiplayer — 10 levels / open play
+    Objective: Score three goals first.
+29. Drawing Studio — Creative — 10 levels / open play
+    Objective: Create a drawing and fill the creativity meter.
+30. Trivia Quest — Learning — 40-level campaign
+    Objective: Answer enough questions correctly.
+31. Tower Defense — Strategy — 40-level campaign
+    Objective: Stop every wave before the base reaches zero health.
+32. Platform Adventure — Adventure — 40-level campaign
+    Objective: Collect every gem and touch the exit.
+33. Sokoban — Puzzle — 40-level campaign
+    Objective: Place every crate on a goal.
+34. Hangman — Word — 40-level campaign
+    Objective: Reveal the hidden word with fewer than six mistakes.
+35. Blackjack — Cards — 40-level campaign
+    Objective: Finish closer to 21 than the dealer.
+36. Fruit Merge — Puzzle — 40-level campaign
+    Objective: Create the target fruit size.
+37. Chess Tactics — Strategy — 40-level campaign
+    Objective: Find the highlighted tactical move.
+38. Word Search — Word — 40-level campaign
+    Objective: Find every listed word.
+39. Crossword Mini — Word — 40-level campaign
+    Objective: Complete every answer.
+40. Word Scramble — Word — 40-level campaign
+    Objective: Unscramble the required words.
+41. Math Sprint — Learning — 40-level campaign
+    Objective: Reach the correct-answer target before time runs out.
+42. Typing Race — Learning — 40-level campaign
+    Objective: Finish the text course before the rival.
+43. Rhythm Tap — Music — 40-level campaign
+    Objective: Complete the song with enough accurate hits.
+44. Music Sequencer — Creative — 12 levels / open play
+    Objective: Reproduce the displayed target rhythm.
+45. Paint by Numbers — Creative — 40-level campaign
+    Objective: Color every region correctly.
+46. Jigsaw Puzzle — Puzzle — 40-level campaign
+    Objective: Place every piece correctly.
+47. Sliding Puzzle — Puzzle — 40-level campaign
+    Objective: Arrange the numbers in ascending order.
+48. Pipe Connect — Puzzle — 40-level campaign
+    Objective: Connect the source to the drain with no leaks.
+49. Laser Mirrors — Puzzle — 40-level campaign
+    Objective: Guide the beam to the target.
+50. Tangram Builder — Puzzle — 40-level campaign
+    Objective: Fill the silhouette with every piece.
+51. Nonogram — Puzzle — 40-level campaign
+    Objective: Match every clue exactly.
+52. Mastermind — Puzzle — 40-level campaign
+    Objective: Crack the code within the allowed guesses.
+53. Code Breaker — Learning — 40-level campaign
+    Objective: Open the lock within the attempt limit.
+54. Yahtzee — Cards — 40-level campaign
+    Objective: Reach the target score in five rounds.
+55. Mini Solitaire — Cards — 40-level campaign
+    Objective: Move every card to the foundations.
+56. War Card Battle — Cards — 40-level campaign
+    Objective: Win more rounds than the computer.
+57. Go Fish — Cards — 40-level campaign
+    Objective: Finish with more books than the computer.
+58. Dice Race — Board — 40-level campaign
+    Objective: Get both tokens to the finish first.
+59. Dots and Boxes — Board — 10 levels / open play
+    Objective: Claim more boxes than Player 2.
+60. Mancala — Board — 40-level campaign
+    Objective: Finish with more stones in your store.
+61. Nine Men’s Morris — Board — 40-level campaign
+    Objective: Reduce the computer to two pieces or block all moves.
+62. Gomoku — Board — 40-level campaign
+    Objective: Make five in a row before the computer.
+63. Hex Bridge — Board — 40-level campaign
+    Objective: Connect left to right before the computer connects top to bottom.
+64. Domino Chain — Board — 40-level campaign
+    Objective: Empty your hand before the computer.
+65. Volleyball Rally — Multiplayer — 10 levels / open play
+    Objective: Score seven points first.
+66. Air Hockey — Multiplayer — 10 levels / open play
+    Objective: Score five goals first.
+67. Bowling Challenge — Sports — 40-level campaign
+    Objective: Reach the target score in five frames.
+68. Fishing Lake — Simulation — 40-level campaign
+    Objective: Catch the required total weight.
+69. Cooking Rush — Simulation — 40-level campaign
+    Objective: Serve the required number of correct orders.
+70. Farm Planner — Simulation — 40-level campaign
+    Objective: Reach the harvest-value target.
+71. Pet Care — Simulation — 40-level campaign
+    Objective: Keep every need healthy through the day.
+72. City Builder — Simulation — 40-level campaign
+    Objective: Reach the population target without debt or power shortage.
+73. Mini Pinball — Arcade — 40-level campaign
+    Objective: Reach the target score before losing three balls.
+74. Candy Match — Puzzle — 40-level campaign
+    Objective: Reach the target score within the move limit.
+75. Robot Programmer — Learning — 40-level campaign
+    Objective: Reach the goal using the command limit.

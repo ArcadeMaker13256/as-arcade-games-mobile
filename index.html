@@ -8,18 +8,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="A's Arcade">
   <title>A's Arcade Games — GitHub Mobile Edition</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=9.0">
+  <link rel="manifest" href="manifest.webmanifest?v=10.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=10.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-v10.png">
+  <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 <body>
   <div id="toast" role="status" aria-live="polite"></div>
 
   <section id="authView" class="view active">
     <div class="auth-card glass">
-      <img id="mainLogo" class="main-logo" src="./assets/arcade-logo.png?v=9.0" alt="A's Arcade logo" width="500" height="500" onerror="this.onerror=null;this.src='./icons/icon-512.png?v=9.0'">
+      <img id="mainLogo" class="main-logo" src="./assets/arcade-logo.png?v=10.0" alt="A's Arcade logo" width="500" height="500" onerror="this.onerror=null;this.src='./icons/icon-512.png?v=10.0'">
       <h1>A's Arcade Games</h1>
-      <p class="subtitle">GitHub Mobile Edition 9.0 • 75 genuinely different games</p>
+      <p class="subtitle">GitHub Mobile Edition 10.0 • 75 unique games • 40-level campaigns</p>
       <div id="loginAvatarPreview" class="login-avatar-preview" aria-label="Selected player avatar"></div>
       <label>Player account
         <select id="accountSelect"></select>
@@ -33,6 +34,7 @@
         <button id="parentBtn">Parental Controls</button>
       </div>
       <button id="installBtn" class="hidden">Install on Home Screen</button>
+      <button id="authWebsiteBtn" class="website-button" type="button">Feedback and request simple games</button>
       <p class="small">Progress stays on this device. The app works offline after the first complete load.</p>
     </div>
   </section>
@@ -54,6 +56,7 @@
         <button data-panel="leaderboardPanel">Leaderboards</button>
         <button data-panel="settingsPanel">Customize</button>
         <button data-panel="parentPanel">Parental Controls</button>
+        <button id="websiteBtn" class="website-button" type="button">Feedback & Requests</button>
         <button id="logoutBtn">Log Out</button>
       </nav>
     </header>
@@ -126,10 +129,10 @@
     <button id="saveAccountBtn" class="primary">Create Account</button>
   </dialog>
 
-  <script src="avatar.js?v=9.0"></script>
-  <script src="games.js?v=9.0"></script>
-  <script src="game-engines.js?v=9.0"></script>
-  <script src="extra-engines.js?v=9.0"></script>
-  <script src="app.js?v=9.0"></script>
+  <script src="avatar.js?v=10.0"></script>
+  <script src="games.js?v=10.0"></script>
+  <script src="game-engines.js?v=10.0"></script>
+  <script src="extra-engines.js?v=10.0"></script>
+  <script src="app.js?v=10.0"></script>
 </body>
 </html>

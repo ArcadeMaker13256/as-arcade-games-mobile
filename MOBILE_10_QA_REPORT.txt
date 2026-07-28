@@ -1,0 +1,76 @@
+A'S ARCADE GAMES — MOBILE 10 QA REPORT
+============================================
+
+RESULT: PASS
+
+CATALOG AND CODE
+----------------
+• 75 registered games
+• 75 unique names
+• 75 unique IDs
+• 75 unique engine IDs
+• Every game contains an objective, instructions, and controls
+• JavaScript syntax passed for avatar.js, games.js, game-engines.js, extra-engines.js, app.js, and service-worker.js
+
+40-LEVEL CAMPAIGNS
+------------------
+• 68 compatible one-player games contain exactly 40 levels
+• 2,720 game/level engine constructions were tested (68 × 40)
+• Each tested level successfully created its engine, performed an update, and rendered a frame
+• Open creative games and multiplayer games retain their suitable non-campaign structure
+
+FULL GAME STARTUP AND INPUT TEST
+--------------------------------
+• 75/75 games opened in Chromium mobile emulation
+• Every game received lightweight keyboard and pointer/touch interaction
+• No uncaught JavaScript errors appeared
+• No Game Error overlay appeared
+
+LOSS AND RESTART TEST
+---------------------
+• A forced loss on Crossy Street Level 7 displayed the restart message
+• The game automatically restarted Level 7
+• It did not reset to Level 1 or advance to Level 8
+
+MOBILE, DESKTOP, AND GAMEPAD CONTROLS
+------------------------------------
+• Touch dock was visible, fixed, and positioned at the bottom on mobile
+• Extra Large control buttons measured at least 68 pixels in the browser test
+• Desktop touch controls auto-hid and reopened with the toggle
+• Desktop keyboard input reached the active game session
+• Mock browser gamepad direction and action input reached the active game session
+
+SPEED BALANCING
+---------------
+• Crossy Street traffic speed was substantially reduced and capped across 40 levels
+• Crossy Street now provides a short safety grace period after moving lanes
+• Dino Dash, Flappy Flight, Road Racer, Space Invaders, Tetris, and Tower Defense received capped difficulty/speed scaling
+• Difficulty still increases, but does not grow without a limit
+
+CUSTOMIZATION AND ACCESSIBILITY
+-------------------------------
+• 12 launcher themes
+• 12 wallpaper patterns
+• 16 banners
+• 16 avatar presets
+• Normal, Large, and Extra Large touchscreen controls
+• Normal and Large launcher text
+• Compact, Normal, and Large game cards
+• High contrast and reduced motion remain available
+
+WEBSITE AND ICONS
+-----------------
+• The website button opened the exact supplied URL during browser testing
+• Main logo rendered from the supplied 500×500 image
+• 32×32 favicon validated
+• 180×180 Apple touch icon validated
+• 192×192 and 512×512 standard PWA icons validated
+• 192×192 and 512×512 maskable PWA icons validated
+• Manifest contains both standard and maskable icons
+• Service-worker cache entries and required file references were statically validated
+
+LIMITATIONS
+-----------
+• Automated testing does not manually complete every level or every possible move sequence.
+• Live service-worker installation/offline behavior must be confirmed after deployment on GitHub Pages because local HTTP navigation was restricted in the test environment.
+• Physical controllers and different iPhone/iPad models should receive final real-device checks.

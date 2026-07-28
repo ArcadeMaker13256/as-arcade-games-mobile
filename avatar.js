@@ -25,7 +25,15 @@ const AVATAR_PRESETS=[
   {id:'tech-hero',name:'Tech Hero',config:{skin:4,face:1,hair:7,hairColor:5,eyes:3,brows:2,mouth:0,shirt:2,shirtColor:6,accessory:7,background:5}},
   {id:'royal-player',name:'Royal Player',config:{skin:1,face:0,hair:5,hairColor:3,eyes:2,brows:1,mouth:1,shirt:0,shirtColor:7,accessory:4,background:1}},
   {id:'forest-friend',name:'Forest Friend',config:{skin:2,face:0,hair:2,hairColor:1,eyes:1,brows:0,mouth:0,shirt:1,shirtColor:3,accessory:0,background:2}},
-  {id:'night-gamer',name:'Night Gamer',config:{skin:5,face:2,hair:1,hairColor:5,eyes:0,brows:3,mouth:3,shirt:0,shirtColor:2,accessory:2,background:7}}
+  {id:'night-gamer',name:'Night Gamer',config:{skin:5,face:2,hair:1,hairColor:5,eyes:0,brows:3,mouth:3,shirt:0,shirtColor:2,accessory:2,background:7}},
+  {id:'ocean-explorer',name:'Ocean Explorer',config:{skin:2,face:1,hair:4,hairColor:1,eyes:2,brows:1,mouth:0,shirt:1,shirtColor:0,accessory:6,background:7}},
+  {id:'candy-creator',name:'Candy Creator',config:{skin:0,face:3,hair:5,hairColor:6,eyes:1,brows:0,mouth:1,shirt:0,shirtColor:1,accessory:5,background:3}},
+  {id:'galaxy-captain',name:'Galaxy Captain',config:{skin:4,face:2,hair:7,hairColor:7,eyes:2,brows:3,mouth:3,shirt:2,shirtColor:2,accessory:7,background:1}},
+  {id:'nature-artist',name:'Nature Artist',config:{skin:3,face:0,hair:2,hairColor:2,eyes:1,brows:1,mouth:0,shirt:1,shirtColor:3,accessory:6,background:2}},
+  {id:'royal-gamer-2',name:'Royal Gamer',config:{skin:1,face:3,hair:3,hairColor:4,eyes:2,brows:1,mouth:1,shirt:2,shirtColor:7,accessory:4,background:4}},
+  {id:'retro-racer',name:'Retro Racer',config:{skin:2,face:2,hair:6,hairColor:0,eyes:0,brows:3,mouth:3,shirt:3,shirtColor:5,accessory:3,background:5}},
+  {id:'puzzle-pro',name:'Puzzle Pro',config:{skin:5,face:1,hair:0,hairColor:5,eyes:3,brows:2,mouth:0,shirt:0,shirtColor:6,accessory:1,background:0}},
+  {id:'music-star',name:'Music Star',config:{skin:1,face:0,hair:4,hairColor:3,eyes:1,brows:0,mouth:1,shirt:3,shirtColor:4,accessory:2,background:6}}
 ];
 
 function cloneAvatar(value){return JSON.parse(JSON.stringify(value));}

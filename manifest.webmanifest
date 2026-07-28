@@ -1,26 +1,18 @@
 {
-  "name": "A's Arcade Games \u2014 75 Unique Mobile Games",
+  "name": "A's Arcade Games — 75 Unique Mobile Games",
   "short_name": "A's Arcade",
-  "description": "75 genuinely different offline games with matching mechanics, touchscreen, keyboard, and gamepad controls.",
-  "start_url": "./?v=9.0",
+  "description": "75 unique offline games with 40-level campaigns, touch, keyboard, and gamepad controls.",
+  "start_url": "./?v=10.0",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#071329",
+  "background_color": "#050a1e",
   "theme_color": "#09142f",
   "icons": [
-    {
-      "src": "./icons/icon-192.png?v=9.0",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "./icons/icon-512.png?v=9.0",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    {"src":"./icons/icon-192.png?v=10.0","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"./icons/icon-512.png?v=10.0","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"./icons/maskable-192.png?v=10.0","sizes":"192x192","type":"image/png","purpose":"maskable"},
+    {"src":"./icons/maskable-512.png?v=10.0","sizes":"512x512","type":"image/png","purpose":"maskable"}
   ],
-  "id": "./?app=as-arcade-v9-75"
+  "id": "./?app=as-arcade-v10-75"
 }
