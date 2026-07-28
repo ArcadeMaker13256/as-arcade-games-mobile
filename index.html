@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#09142f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="A's Arcade">
+  <title>A's Arcade Games — GitHub Mobile Edition</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <section id="authView" class="view active">
+    <div class="auth-card glass">
+      <img class="main-logo" src="assets/logo.png" alt="A's Arcade logo">
+      <h1>A's Arcade Games</h1>
+      <p class="subtitle">GitHub Mobile Edition • 190 touch-friendly arcade adaptations</p>
+      <label>Player account
+        <select id="accountSelect"></select>
+      </label>
+      <label>PIN
+        <input id="loginPin" type="password" inputmode="numeric" maxlength="12" autocomplete="current-password">
+      </label>
+      <button id="loginBtn" class="primary">Log In</button>
+      <div class="auth-actions">
+        <button id="createBtn">Create Account</button>
+        <button id="parentBtn">Parental Controls</button>
+      </div>
+      <button id="installBtn" class="hidden">Install on Home Screen</button>
+      <p class="small">Progress stays on this device. The app works offline after the first complete load.</p>
+    </div>
+  </section>
+
+  <section id="launcherView" class="view">
+    <header id="launcherHeader" class="launcher-header">
+      <div class="profile-row">
+        <button id="avatarButton" class="avatar" aria-label="Customize avatar">🎮</button>
+        <div class="profile-copy">
+          <h2 id="welcomeText">Welcome</h2>
+          <p id="bannerText">Arcade Explorer</p>
+        </div>
+        <div class="wallet"><span>LV <b id="levelText">1</b></span><span>⭐ <b id="xpText">0</b></span><span>🪙 <b id="coinText">0</b></span></div>
+      </div>
+      <nav class="launcher-actions" aria-label="Launcher actions">
+        <button data-panel="dailyPanel">Daily</button>
+        <button data-panel="storePanel">AG Store</button>
+        <button data-panel="achievementPanel">Trophies</button>
+        <button data-panel="leaderboardPanel">Leaderboards</button>
+        <button data-panel="settingsPanel">Customize</button>
+        <button data-panel="parentPanel">Parental Controls</button>
+        <button id="logoutBtn">Log Out</button>
+      </nav>
+    </header>
+
+    <main class="launcher-main">
+      <div class="filters glass">
+        <input id="searchInput" type="search" placeholder="Search 190 games…" aria-label="Search games">
+        <select id="categorySelect" aria-label="Game category"></select>
+        <label class="check"><input id="favoritesOnly" type="checkbox"> Favorites</label>
+      </div>
+      <div class="summary-row"><span id="gameCount"></span><span id="dailySummary"></span></div>
+      <div id="gameGrid" class="game-grid"></div>
+    </main>
+  </section>
+
+  <section id="gameView" class="view game-view">
+    <header class="game-header">
+      <button id="backToLauncher">← Launcher</button>
+      <div><h2 id="gameTitle">Game</h2><p id="gameLevelText">Level 1</p></div>
+      <button id="pauseBtn">Pause</button>
+    </header>
+    <div class="canvas-wrap">
+      <canvas id="gameCanvas" width="900" height="540" aria-label="Game canvas"></canvas>
+      <div id="gameOverlay" class="game-overlay hidden"></div>
+    </div>
+    <div id="touchControls" class="touch-controls">
+      <div class="control-cluster p1-controls">
+        <span class="cluster-label">PLAYER 1</span>
+        <button data-key="ArrowUp">▲</button>
+        <div><button data-key="ArrowLeft">◀</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button></div>
+      </div>
+      <div class="action-cluster">
+        <button data-key="Space" class="action-a">A<br><small>JUMP / FIRE</small></button>
+        <button data-key="Enter" class="action-b">B<br><small>ACTION</small></button>
+      </div>
+      <div class="control-cluster p2-controls">
+        <span class="cluster-label">PLAYER 2</span>
+        <button data-key="KeyW">W</button>
+        <div><button data-key="KeyA">A</button><button data-key="KeyS">S</button><button data-key="KeyD">D</button></div>
+      </div>
+    </div>
+    <article id="gameInstructions" class="instructions glass"></article>
+  </section>
+
+  <dialog id="detailsDialog" class="modal">
+    <button class="close-dialog" aria-label="Close">×</button>
+    <div id="detailsContent"></div>
+  </dialog>
+
+  <dialog id="panelDialog" class="modal wide">
+    <button class="close-dialog" aria-label="Close">×</button>
+    <div id="panelContent"></div>
+  </dialog>
+
+  <dialog id="accountDialog" class="modal">
+    <button class="close-dialog" aria-label="Close">×</button>
+    <h2>Create Player Account</h2>
+    <label>Username<input id="newUsername" maxlength="20"></label>
+    <label>Display name<input id="newDisplayName" maxlength="24"></label>
+    <label>PIN<input id="newPin" type="password" inputmode="numeric" maxlength="12"></label>
+    <label>Account type<select id="newAccountType"><option>Child</option><option>Teen</option><option selected>Standard</option></select></label>
+    <label>Avatar<select id="newAvatar"></select></label>
+    <button id="saveAccountBtn" class="primary">Create Account</button>
+  </dialog>
+
+  <script src="games.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
