@@ -1,0 +1,38 @@
+A'S ARCADE GAMES — GITHUB MOBILE 7.1 QA REPORT
+================================================
+
+CORRECTIONS
+-----------
+• games.js and games.json regenerated from one synchronized 190-game catalog.
+• Added cache-busting version parameters for app.js, avatar.js, games.js and CSS.
+• Replaced cache-first JavaScript/game-data loading with network-first loading.
+• Added automatic catalog refresh when an older cached game list is detected.
+• Cleaned repeated control labels such as "Touch / touch".
+• Replaced emoji-only avatars with original layered SVG character avatars.
+• Existing emoji-avatar accounts migrate automatically to the new avatar format.
+• Added live avatar previews during account creation, login and customization.
+• Added 11 avatar feature controls and eight complete avatar presets.
+• Kept avatar ears intentionally smaller than the earlier Windows design.
+
+AUTOMATED CHECKS
+----------------
+PASS — avatar.js JavaScript syntax
+PASS — app.js JavaScript syntax
+PASS — games.js JavaScript syntax
+PASS — service-worker.js JavaScript syntax
+PASS — 190 unique game IDs
+PASS — games.js and games.json contain identical game data
+PASS — all 190 game cards rendered
+PASS — all 190 details-page titles matched their selected game cards
+PASS — account-creation avatar preview rendered
+PASS — account creation and PIN login completed in browser simulation
+PASS — launcher header avatar rendered
+PASS — Avatar Studio rendered 11 customization controls
+PASS — no browser page errors during the tested flows
+
+IMPORTANT
+---------
+The mobile edition still uses shared HTML5 Canvas engines for some game groups.
+This report verifies that game cards, titles and instructions stay attached to
+the correct catalog entry. It does not claim that all 190 mobile adaptations are
+exact copies of the corresponding Windows Python games.

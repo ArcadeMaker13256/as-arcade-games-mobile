@@ -1,6 +1,6 @@
 A'S ARCADE GAMES — GITHUB MOBILE EDITION
 ========================================
-Version: 7.0-web
+Version: 7.1-web — Game Name and Avatar Fix
 Games listed: 190
 
 WHAT THIS PACKAGE IS
@@ -18,6 +18,8 @@ FEATURES
 • Favorites, categories, search, progress, high scores, XP and achievements
 • AG Coins: 1 coin for each newly completed level and 5 for game completion
 • Daily challenges, AG Store, customization and local leaderboards
+• Original layered avatar studio with face, hair, eyes, clothing and accessories
+• Synchronized game catalog to prevent mixed titles and descriptions
 • Touch controls remain at the bottom of the webpage; no separate popup
 • Responsive game canvas for iPhone, iPad, Android and desktop browsers
 • Offline caching after the first complete successful load
@@ -51,7 +53,7 @@ FIRST-TIME SETUP
 ----------------
 1. Tap Create Account.
 2. Enter a username, display name and at least a four-digit PIN.
-3. Choose an account type and avatar.
+3. Choose an account type and build a custom avatar using the live preview.
 4. Log in with the new account.
 5. Open Parental Controls to create the separate administrator PIN.
 
@@ -74,14 +76,15 @@ player PINs, account data or progress.
 UPDATING THE APP
 ----------------
 Upload changed files to the same repository and commit them. The service worker
-uses cache name as-arcade-github-v7. When making a future release, change that
-cache name so devices download the updated files.
+uses a versioned cache and refreshes JavaScript/game data from the network first.
+This prevents an old game-name list from being mixed with a newer launcher.
 
 TROUBLESHOOTING
 ---------------
 • Blank page: confirm index.html is at the repository root.
-• Old version: close the app, reopen Safari, refresh the site, then reopen the
-  Home Screen app. If necessary remove the Home Screen icon and add it again.
+• Old version or mixed names: upload every file from this package, then open the
+  site in Safari and refresh. The new service worker will replace the old cache.
+  If the old Home Screen app remains, remove its icon and add it again.
 • No offline play: open the complete site once while online before disconnecting.
 • No sound: tap anywhere in the page first; mobile browsers require interaction
   before they allow audio.

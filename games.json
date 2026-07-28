@@ -532,7 +532,7 @@
   {
     "id": "mini-sudoku",
     "name": "Mini Sudoku",
-    "description": "Solve a friendly 4\u00d74 Sudoku puzzle.",
+    "description": "Solve a friendly 4×4 Sudoku puzzle.",
     "category": "Puzzle",
     "controls": "On-screen controls",
     "engine": "puzzle",
@@ -1024,7 +1024,7 @@
     "name": "Candy Cascade",
     "description": "A colorful match-three puzzle campaign with combos and score goals.",
     "category": "Puzzle",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "puzzle",
     "levels": 10,
     "new": true
@@ -1054,7 +1054,7 @@
     "name": "Crystal Tower Defense",
     "description": "Defend a glowing crystal road using prism towers.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1064,7 +1064,7 @@
     "name": "Robot Tower Defense",
     "description": "Stop robot waves with electric triangle turrets.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1074,7 +1074,7 @@
     "name": "Garden Tower Defense",
     "description": "Protect the garden using magical plant towers.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1084,7 +1084,7 @@
     "name": "Cookie Empire Idle",
     "description": "Grow a cookie cart into an interplanetary bakery.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1094,7 +1094,7 @@
     "name": "Space Station Tycoon",
     "description": "Build energy, research, launch, and warp businesses.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1104,7 +1104,7 @@
     "name": "Theme Park Tycoon",
     "description": "Expand rides from a carousel to a sky park.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1114,7 +1114,7 @@
     "name": "Pizza Shop Tycoon",
     "description": "Turn one oven into a citywide pizza business.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1124,7 +1124,7 @@
     "name": "Mining Company Tycoon",
     "description": "Upgrade miners, refineries, and crystal extraction.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1134,7 +1134,7 @@
     "name": "Aquarium Tycoon",
     "description": "Build tanks, tunnels, ocean domes, and legendary reefs.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1144,7 +1144,7 @@
     "name": "Game Studio Tycoon",
     "description": "Grow an indie desk into a global game publisher.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "drawing",
     "levels": 10,
     "new": true
@@ -1174,7 +1174,7 @@
     "name": "Fruit Merge",
     "description": "Combine fruit into bigger and rarer harvests.",
     "category": "Puzzle",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "merge",
     "levels": 10,
     "new": true
@@ -1184,7 +1184,7 @@
     "name": "Planet Merge",
     "description": "Build moons into planets, giants, and glowing stars.",
     "category": "Puzzle",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "merge",
     "levels": 10,
     "new": true
@@ -1194,7 +1194,7 @@
     "name": "Creature Merge",
     "description": "Evolve tiny creatures into legendary arcade beasts.",
     "category": "Puzzle",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "merge",
     "levels": 10,
     "new": true
@@ -1264,7 +1264,7 @@
     "name": "Galaxy Clicker",
     "description": "Tap stars, buy energy, and automate a growing galaxy.",
     "category": "Casual",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1274,7 +1274,7 @@
     "name": "Hero Training Clicker",
     "description": "Train a tiny hero through increasingly powerful upgrades.",
     "category": "Casual",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1344,7 +1344,7 @@
     "name": "Bubble Shooter Quest",
     "description": "Bank shots and clear color clusters over twenty levels.",
     "category": "Puzzle",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "shooter",
     "levels": 20,
     "new": true
@@ -1354,7 +1354,7 @@
     "name": "Chess",
     "description": "Complete chess with legal piece movement, check, checkmate, castling, promotion, and en passant.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1364,7 +1364,7 @@
     "name": "Go 9x9",
     "description": "Compact territory placement inspired by Go.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1374,7 +1374,7 @@
     "name": "Gomoku",
     "description": "Place five stones in a row.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1384,7 +1384,7 @@
     "name": "Nine Men's Morris",
     "description": "Build lines and capture opposing pieces.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1394,7 +1394,7 @@
     "name": "Mancala",
     "description": "Sow stones around twelve pits and collect the most.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1404,7 +1404,7 @@
     "name": "Backgammon",
     "description": "Move checkers by dice, hit blots, enter from the bar, and bear off all pieces.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1414,7 +1414,7 @@
     "name": "Ludo Race",
     "description": "Race pieces around a colorful track.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "runner",
     "levels": 10,
     "new": true
@@ -1424,7 +1424,7 @@
     "name": "Snakes and Ladders",
     "description": "Roll through boosts and setbacks to the finish.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1434,7 +1434,7 @@
     "name": "Chinese Checkers",
     "description": "Move or chain-jump pieces into the opposite camp.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1444,7 +1444,7 @@
     "name": "Halma",
     "description": "Move and jump pieces into the opposing camp.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1454,7 +1454,7 @@
     "name": "Hnefatafl",
     "description": "Help the king escape while attackers attempt to capture him.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1464,7 +1464,7 @@
     "name": "Mini Shogi",
     "description": "Compact capture and line-building tactics.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1474,7 +1474,7 @@
     "name": "Mini Xiangqi",
     "description": "River-board strategy in an arcade-sized adaptation.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1484,7 +1484,7 @@
     "name": "Stratego",
     "description": "Use hidden ranks, bombs, scouts, miners, and the flag under standard movement and battle rules.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1494,7 +1494,7 @@
     "name": "Battleship Classic",
     "description": "Crack hidden fleet coordinates through clues.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1504,7 +1504,7 @@
     "name": "Clue Detective",
     "description": "Use repeated clues to solve a hidden case code.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1514,7 +1514,7 @@
     "name": "Property Tycoon Board",
     "description": "Race around the board and collect bonuses.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1524,7 +1524,7 @@
     "name": "Word Tiles",
     "description": "Pattern-placement adaptation with letter-tile scoring.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "quiz",
     "levels": 10,
     "new": true
@@ -1534,7 +1534,7 @@
     "name": "Boggle Board",
     "description": "Find patterns across a letter-style tile board.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1544,7 +1544,7 @@
     "name": "Yahtzee Deluxe",
     "description": "Roll, hold, and score dice combinations.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1554,7 +1554,7 @@
     "name": "Dominoes",
     "description": "Match domino ends, block opponents, and empty your hand first.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1564,7 +1564,7 @@
     "name": "Mahjong Pairs Board",
     "description": "Match-inspired tile placement and pattern scoring.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "memory",
     "levels": 10,
     "new": true
@@ -1574,7 +1574,7 @@
     "name": "Rummikub",
     "description": "Create valid groups and runs, manipulate the table, and empty your rack.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1584,7 +1584,7 @@
     "name": "Sequence Five",
     "description": "Create a line of five before your opponent.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1594,7 +1594,7 @@
     "name": "Pente",
     "description": "Connect five while capturing surrounded pieces.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1604,7 +1604,7 @@
     "name": "Hex Board",
     "description": "Build an unbroken route across the board.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1614,7 +1614,7 @@
     "name": "Quoridor",
     "description": "Reach the opposite side while placing legal walls that never block every path.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1624,7 +1624,7 @@
     "name": "Santorini",
     "description": "Move, build, and win by reaching level three under standard Santorini rules.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1634,7 +1634,7 @@
     "name": "Hive",
     "description": "Place and move insect pieces while keeping the hive connected and surrounding the opposing queen.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1644,7 +1644,7 @@
     "name": "Azul Pattern",
     "description": "Place colorful tiles into high-scoring patterns.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1654,7 +1654,7 @@
     "name": "Carcassonne",
     "description": "Place matching landscape tiles, deploy followers, and score completed features.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1664,7 +1664,7 @@
     "name": "Route Tickets",
     "description": "Connect routes across a compact map.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1674,7 +1674,7 @@
     "name": "Catan Dice",
     "description": "Roll combinations to develop a growing settlement.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1684,7 +1684,7 @@
     "name": "Risk Dice",
     "description": "Win rounds through tactical dice combinations.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1692,9 +1692,9 @@
   {
     "id": "guess-who",
     "name": "Guess Who",
-    "description": "Ask attribute questions and identify the opponent\u2019s hidden character.",
+    "description": "Ask attribute questions and identify the opponent’s hidden character.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1704,7 +1704,7 @@
     "name": "Onitama",
     "description": "Compact movement and capture-inspired tactics.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1714,7 +1714,7 @@
     "name": "Fanorona",
     "description": "Capture by approach or withdrawal while following mandatory-capture sequences.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1724,7 +1724,7 @@
     "name": "Oware",
     "description": "A strategic sowing game from the Mancala family.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1734,7 +1734,7 @@
     "name": "Reversi Tournament",
     "description": "Place discs, flip bracketed lines, and finish with the most discs.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1744,7 +1744,7 @@
     "name": "Connect Five",
     "description": "Place five pieces in a row on a larger grid.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1754,7 +1754,7 @@
     "name": "Co-op Dungeon Adventure",
     "description": "Two heroes explore one dungeon together, collect keys, avoid enemies, and escape.",
     "category": "Adventure",
-    "controls": "P1 WASD \u2022 P2 arrows",
+    "controls": "P1 WASD • P2 arrows",
     "engine": "arena",
     "levels": 20,
     "new": true
@@ -1764,7 +1764,7 @@
     "name": "Kart Battle",
     "description": "A fast two-player arena with steering, projectiles, obstacles, and score rounds.",
     "category": "Multiplayer",
-    "controls": "P1 WASD/F \u2022 P2 arrows/Enter",
+    "controls": "P1 WASD/F • P2 arrows/Enter",
     "engine": "runner",
     "levels": 10,
     "new": true
@@ -1774,7 +1774,7 @@
     "name": "Restaurant Rush",
     "description": "Build customer orders under pressure and grow a twelve-stage restaurant campaign.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1784,7 +1784,7 @@
     "name": "Pet Care Simulator",
     "description": "Feed, clean, play with, and rest a lively virtual companion.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1794,7 +1794,7 @@
     "name": "Fashion & Character Studio",
     "description": "Design colorful characters with hair, clothing, hats, and randomized styles.",
     "category": "Creative",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "drawing",
     "levels": 10,
     "new": true
@@ -1804,7 +1804,7 @@
     "name": "Detective Mystery Campaign",
     "description": "Study clues and solve twelve changing mystery cases.",
     "category": "Adventure",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "collect",
     "levels": 20,
     "new": true
@@ -1824,7 +1824,7 @@
     "name": "Pocket City Builder",
     "description": "Balance money, population, parks, shops, factories, and happiness.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1834,7 +1834,7 @@
     "name": "Sunny Farm Adventure",
     "description": "Plant, water, grow, and harvest crops across a fifteen-level farm.",
     "category": "Simulation",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "clicker",
     "levels": 10,
     "new": true
@@ -1874,7 +1874,7 @@
     "name": "Party Game Collection",
     "description": "Five randomized multiplayer mini-games for quick family competitions.",
     "category": "Multiplayer",
-    "controls": "On-screen controls / mouse",
+    "controls": "Touch controls",
     "engine": "arena",
     "levels": 10,
     "new": true
@@ -1884,7 +1884,7 @@
     "name": "Creature Battle League",
     "description": "Train a creature through tactical attack, defense, healing, and power choices.",
     "category": "Strategy",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "board",
     "levels": 10,
     "new": true
@@ -1894,7 +1894,7 @@
     "name": "Code Quest Academy",
     "description": "Build command sequences that guide a robot around obstacles to a target.",
     "category": "Learning",
-    "controls": "Touch / touch",
+    "controls": "Touch",
     "engine": "quiz",
     "levels": 10,
     "new": true

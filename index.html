@@ -10,7 +10,7 @@
   <title>A's Arcade Games — GitHub Mobile Edition</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=7.1">
 </head>
 <body>
   <div id="toast" role="status" aria-live="polite"></div>
@@ -19,7 +19,8 @@
     <div class="auth-card glass">
       <img class="main-logo" src="assets/logo.png" alt="A's Arcade logo">
       <h1>A's Arcade Games</h1>
-      <p class="subtitle">GitHub Mobile Edition • 190 touch-friendly arcade adaptations</p>
+      <p class="subtitle">GitHub Mobile Edition 7.1 • 190 touch-friendly arcade adaptations</p>
+      <div id="loginAvatarPreview" class="login-avatar-preview" aria-label="Selected player avatar"></div>
       <label>Player account
         <select id="accountSelect"></select>
       </label>
@@ -39,7 +40,7 @@
   <section id="launcherView" class="view">
     <header id="launcherHeader" class="launcher-header">
       <div class="profile-row">
-        <button id="avatarButton" class="avatar" aria-label="Customize avatar">🎮</button>
+        <button id="avatarButton" class="avatar" aria-label="Customize avatar"></button>
         <div class="profile-copy">
           <h2 id="welcomeText">Welcome</h2>
           <p id="bannerText">Arcade Explorer</p>
@@ -114,11 +115,16 @@
     <label>Display name<input id="newDisplayName" maxlength="24"></label>
     <label>PIN<input id="newPin" type="password" inputmode="numeric" maxlength="12"></label>
     <label>Account type<select id="newAccountType"><option>Child</option><option>Teen</option><option selected>Standard</option></select></label>
-    <label>Avatar<select id="newAvatar"></select></label>
+    <div class="avatar-create-layout">
+      <div id="newAvatarPreview" class="avatar-preview-large" aria-label="Avatar preview"></div>
+      <div id="newAvatarControls" class="avatar-control-grid"></div>
+    </div>
+    <div class="avatar-actions"><button id="randomizeNewAvatar" type="button">Surprise Me</button></div>
     <button id="saveAccountBtn" class="primary">Create Account</button>
   </dialog>
 
-  <script src="games.js"></script>
-  <script src="app.js"></script>
+  <script src="avatar.js?v=7.1"></script>
+  <script src="games.js?v=7.1"></script>
+  <script src="app.js?v=7.1"></script>
 </body>
 </html>
