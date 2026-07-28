@@ -1,0 +1,229 @@
+A'S ARCADE GAMES — 75 GAME FORMAT AUDIT
+
+Every game below has a different engine ID and a title-specific core loop.
+
+01. Snake [snake]
+    Objective: Reach the target length.
+    Format: Steer one grid square at a time. Eat fruit to grow, but never reverse directly into your own body.
+02. Brick Breaker [brick]
+    Objective: Break every brick before losing all balls.
+    Format: Move the paddle under the ball. Paddle contact changes the bounce angle; stronger bricks need more than one hit.
+03. Pong Duel [pong]
+    Objective: Score five points before the other player.
+    Format: Each player moves one paddle. Return the ball past the opponent’s paddle to score.
+04. Space Invaders [invaders]
+    Objective: Destroy every invader before they land.
+    Format: Move the ship beneath the formation and fire upward. Dodge enemy shots and stop the aliens from reaching your row.
+05. Asteroid Patrol [asteroids]
+    Objective: Clear the asteroid field.
+    Format: Rotate the ship, thrust in the facing direction, and fire. The ship and rocks wrap around screen edges.
+06. Flappy Flight [flappy]
+    Objective: Pass the required number of gaps.
+    Format: Tap or press Space to flap upward. Gravity pulls the bird down between flaps.
+07. Dino Dash [dino]
+    Objective: Reach the finish marker.
+    Format: Jump over cacti and duck under flying obstacles. Timing changes as the level gets faster.
+08. Crossy Street [crossy]
+    Objective: Reach the far side safely.
+    Format: Move one tile per press. Avoid cars; on river lanes, stand on moving logs instead of water.
+09. Maze Chase [pacmaze]
+    Objective: Clear all pellets.
+    Format: Move through corridors, collect every pellet, and use power pellets to temporarily weaken ghosts.
+10. Falling Blocks [tetris]
+    Objective: Clear the target number of lines.
+    Format: Move and rotate the falling piece. A completely filled row disappears and scores a line.
+11. Number Merge 2048 [merge2048]
+    Objective: Create the level’s target tile.
+    Format: Every move slides all tiles. Equal neighboring values merge once per move, and a new tile appears afterward.
+12. Memory Match [memory]
+    Objective: Match every pair.
+    Format: Turn over two cards. Matching symbols stay visible; mismatches flip back after a short delay.
+13. Lights Out [lights]
+    Objective: Turn off every light.
+    Format: Tapping one cell flips that cell plus its up, down, left, and right neighbors.
+14. Minesweeper [mines]
+    Objective: Reveal all non-mine cells.
+    Format: Numbers show how many mines touch a square. Switch to flag mode to mark suspected mines.
+15. Mini Sudoku [sudoku]
+    Objective: Fill every blank correctly.
+    Format: Select a blank and choose a number. No value may repeat in a row, column, or bold region.
+16. Tic-Tac-Toe [tictactoe]
+    Objective: Make three X marks in a line.
+    Format: Place X in an empty square. The computer responds with O; rows, columns, and diagonals count.
+17. Connect Four [connect4]
+    Objective: Connect four before the computer.
+    Format: Choose a column; the disc falls to its lowest open space. Four can be horizontal, vertical, or diagonal.
+18. Reversi [reversi]
+    Objective: Finish with more discs than the computer.
+    Format: Place a disc so one or more straight lines of enemy discs are trapped between your new disc and an existing one.
+19. Checkers [checkers]
+    Objective: Capture all computer pieces.
+    Format: Select one of your pieces and a legal diagonal destination. Jump over enemy pieces to capture; reaching the far row crowns a king.
+20. Battleship [battleship]
+    Objective: Sink every ship within the shot limit.
+    Format: Fire at unexplored coordinates. Hits are marked differently from misses; use hit patterns to locate each ship.
+21. Simon Says [simon]
+    Objective: Repeat the full target sequence.
+    Format: Watch the flashing pattern without pressing. When it stops, enter the colors in the same order.
+22. Whack-a-Mole [whack]
+    Objective: Reach the target score before time expires.
+    Format: Tap the brown moles when they appear. Red decoys subtract points.
+23. Bubble Shooter [bubble]
+    Objective: Clear the required number of bubbles.
+    Format: Aim from the launcher. A connected group of at least three matching colors pops.
+24. Basketball Shot [basketball]
+    Objective: Score the required baskets within the shot limit.
+    Format: Pull away from the ball to set direction and power, then release. The ball follows a gravity arc.
+25. Archery Range [archery]
+    Objective: Earn the required target score.
+    Format: Pull back from the bow, aim, and release. Rings score differently and wind bends the arrow’s path.
+26. Mini Golf [golf]
+    Objective: Sink the ball near or under par.
+    Format: Drag away from the ball to set a shot. Bank off boundaries and avoid obstacles.
+27. Road Racer [racer]
+    Objective: Reach the finish with fuel remaining.
+    Format: Change lanes to avoid cars. Collect yellow fuel cans before the tank empties.
+28. Soccer Showdown [soccer]
+    Objective: Score three goals first.
+    Format: Move each player around the field and use the action button near the ball to kick toward the opponent’s goal.
+29. Drawing Studio [drawing]
+    Objective: Create a drawing and fill the creativity meter.
+    Format: Drag on the canvas to paint. Change color and brush size, undo recent strokes, or clear the canvas.
+30. Trivia Quest [trivia]
+    Objective: Answer enough questions correctly.
+    Format: Read each question and select one of four choices. A round ends after six questions.
+31. Tower Defense [towerdefense]
+    Objective: Stop every wave before the base reaches zero health.
+    Format: Spend money on empty tower pads. Select an existing tower and upgrade it for more range and damage.
+32. Platform Adventure [platformer]
+    Objective: Collect every gem and touch the exit.
+    Format: Move across platforms and time jumps. The exit activates only after all gems are collected.
+33. Sokoban [sokoban]
+    Objective: Place every crate on a goal.
+    Format: Walk into a crate to push it one square. Crates cannot be pulled, so avoid trapping them against walls.
+34. Hangman [hangman]
+    Objective: Reveal the hidden word with fewer than six mistakes.
+    Format: Choose letters one at a time. Correct guesses reveal every matching position; incorrect guesses add to the figure.
+35. Blackjack [blackjack]
+    Objective: Finish closer to 21 than the dealer.
+    Format: Hit to take another card or stand to end your turn. Aces count as 1 or 11 automatically.
+36. Fruit Merge [fruitmerge]
+    Objective: Create the target fruit size.
+    Format: Position the drop line and release fruit. Two touching fruit of the same size merge into the next size.
+37. Chess Tactics [chesstactics]
+    Objective: Find the highlighted tactical move.
+    Format: Select the white piece, then choose a legal square. Capture the marked king or tactical target in the allowed move count.
+38. Word Search [wordsearch]
+    Objective: Find every listed word.
+    Format: Drag a straight horizontal, vertical, or diagonal line through the letters of a listed word.
+39. Crossword Mini [crossword]
+    Objective: Complete every answer.
+    Format: Select a white square and enter letters. Tap a clue to switch direction; black squares are blocked.
+40. Word Scramble [scramble]
+    Objective: Unscramble the required words.
+    Format: Tap letter tiles in the correct order. Undo the last tile or shuffle the tray when stuck.
+41. Math Sprint [mathsprint]
+    Objective: Reach the correct-answer target before time runs out.
+    Format: Solve the expression and select one of four answers. Correct answers add time and score; mistakes remove time.
+42. Typing Race [typingrace]
+    Objective: Finish the text course before the rival.
+    Format: Enter the highlighted word exactly. Correct letters advance your racer; mistakes slow progress.
+43. Rhythm Tap [rhythm]
+    Objective: Complete the song with enough accurate hits.
+    Format: Tap the matching lane when a falling note reaches the target line. Early, late, and missed notes affect accuracy.
+44. Music Sequencer [sequencer]
+    Objective: Reproduce the displayed target rhythm.
+    Format: Each row is a sound and each column is a beat. Toggle cells, play the loop, and match the target pattern.
+45. Paint by Numbers [paintnumbers]
+    Objective: Color every region correctly.
+    Format: Choose a numbered color, then tap all cells carrying that number. Incorrect colors are rejected.
+46. Jigsaw Puzzle [jigsaw]
+    Objective: Place every piece correctly.
+    Format: Drag loose pieces from the tray onto the board. Pieces snap only into their matching location.
+47. Sliding Puzzle [sliding]
+    Objective: Arrange the numbers in ascending order.
+    Format: Only a tile touching the empty square can move. Plan moves to restore the ordered grid.
+48. Pipe Connect [pipes]
+    Objective: Connect the source to the drain with no leaks.
+    Format: Tap a tile to rotate it 90 degrees. Every pipe opening must connect to a neighboring pipe or endpoint.
+49. Laser Mirrors [laser]
+    Objective: Guide the beam to the target.
+    Format: The beam travels straight and reflects from / and \ mirrors. Rotate mirrors until the beam hits the receiver.
+50. Tangram Builder [tangram]
+    Objective: Fill the silhouette with every piece.
+    Format: Drag each colored shape into its outlined target area and rotate it when necessary.
+51. Nonogram [nonogram]
+    Objective: Match every clue exactly.
+    Format: Numbers describe consecutive filled runs in each row and column. Mark cells filled or definitely empty.
+52. Mastermind [mastermind]
+    Objective: Crack the code within the allowed guesses.
+    Format: Build a four-color guess. Black pegs mean correct color and position; white pegs mean correct color in a different position.
+53. Code Breaker [codebreaker]
+    Objective: Open the lock within the attempt limit.
+    Format: Adjust each digit, then submit. Clues report digit sum, parity pattern, and how many digits are in the correct position.
+54. Yahtzee [yahtzee]
+    Objective: Reach the target score in five rounds.
+    Format: Roll up to three times. Hold dice between rolls, then choose the best available scoring category.
+55. Mini Solitaire [solitaire]
+    Objective: Move every card to the foundations.
+    Format: Build tableau columns downward in alternating colors. Move aces to foundations and continue each suit upward.
+56. War Card Battle [war]
+    Objective: Win more rounds than the computer.
+    Format: Reveal one card from each deck. Higher rank takes the point; tied cards trigger a war bonus round.
+57. Go Fish [gofish]
+    Objective: Finish with more books than the computer.
+    Format: Ask for a rank already in your hand. If the opponent lacks it, draw from the pond; four matching ranks form a book.
+58. Dice Race [dicerace]
+    Objective: Get both tokens to the finish first.
+    Format: Roll the die, choose which token to move, and use shortcut or safety spaces strategically.
+59. Dots and Boxes [dotsboxes]
+    Objective: Claim more boxes than Player 2.
+    Format: Players alternate drawing one edge. Completing a box earns it and grants another turn.
+60. Mancala [mancala]
+    Objective: Finish with more stones in your store.
+    Format: Select a nonempty pit on your side. Stones are dropped one by one counterclockwise, skipping the opponent’s store.
+61. Nine Men’s Morris [morris]
+    Objective: Reduce the computer to two pieces or block all moves.
+    Format: Place nine pieces, then move along board lines. Forming three in a row lets you remove one opposing piece.
+62. Gomoku [gomoku]
+    Objective: Make five in a row before the computer.
+    Format: Players alternate placing one stone on the grid. Five horizontal, vertical, or diagonal stones wins.
+63. Hex Bridge [hex]
+    Objective: Connect left to right before the computer connects top to bottom.
+    Format: Place one stone each turn. Neighboring hexes connect in six directions, and chains cannot be tied.
+64. Domino Chain [dominoes]
+    Objective: Empty your hand before the computer.
+    Format: A tile is legal when one side matches an open end. Choose left or right when both ends are possible.
+65. Volleyball Rally [volleyball]
+    Objective: Score seven points first.
+    Format: Move and jump on your half. Contact sends the ball over the net; the ball may bounce once before a point is scored.
+66. Air Hockey [airhockey]
+    Objective: Score five goals first.
+    Format: Move each mallet within its half and strike the puck into the opposite goal.
+67. Bowling Challenge [bowling]
+    Objective: Reach the target score in five frames.
+    Format: Choose lane angle, stop the power meter, then roll. Pins knocked across two balls determine each frame score.
+68. Fishing Lake [fishing]
+    Objective: Catch the required total weight.
+    Format: Cast into the lake. When a fish bites, reel while keeping the tension needle inside the safe zone.
+69. Cooking Rush [cooking]
+    Objective: Serve the required number of correct orders.
+    Format: Read the ticket, tap ingredients in order, then serve. Incorrect ingredients waste the dish and time.
+70. Farm Planner [farm]
+    Objective: Reach the harvest-value target.
+    Format: Cycle between seed, water, and harvest tools. Crops need watering and time before they can be sold.
+71. Pet Care [petcare]
+    Objective: Keep every need healthy through the day.
+    Format: Choose feed, play, wash, or sleep. Each action helps one need but advances time and can affect others.
+72. City Builder [citybuilder]
+    Objective: Reach the population target without debt or power shortage.
+    Format: Select residential, commercial, industrial, park, or power zoning, then place it on the grid. Compatible zones increase growth.
+73. Mini Pinball [pinball]
+    Objective: Reach the target score before losing three balls.
+    Format: Launch the ball, operate both flippers, and hit bumpers, lanes, and targets for points and multipliers.
+74. Candy Match [match3]
+    Objective: Reach the target score within the move limit.
+    Format: Swap adjacent pieces. Only swaps that create a match are accepted; matched candies disappear and new ones fall in.
+75. Robot Programmer [robotcode]
+    Objective: Reach the goal using the command limit.
+    Format: Add move, turn-left, and turn-right commands to the program, then run it. Avoid walls and collect required batteries.

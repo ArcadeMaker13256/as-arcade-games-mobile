@@ -1,12 +1,12 @@
 'use strict';
 
-const APP_VERSION='8.0-web';
+const APP_VERSION='9.0-web';
 const DB_KEY='asArcadeMobileDB';
 const AVATARS=AVATAR_PRESETS.map(p=>p.id);
 const THEMES=['neon','sunset','forest','royal','sky','candy'];
 const WALLPAPERS=['none','grid','stars','candy'];
 const BANNERS=['Arcade Explorer','High Score Hero','Puzzle Master','Racing Champion','Creative Star','Family Game Night','Adventure Ace','Strategy Captain'];
-const CATEGORY_ICONS={Arcade:'🕹️',Adventure:'🗺️',Puzzle:'🧩',Strategy:'♟️',Sports:'🏆',Shooter:'🚀',Word:'🔤',Learning:'📚',Creative:'🎨',Casual:'🎯',Racing:'🏁',Multiplayer:'👥',Simulation:'⚙️',Cards:'🃏'};
+const CATEGORY_ICONS={Arcade:'🕹️',Adventure:'🗺️',Puzzle:'🧩',Strategy:'♟️',Sports:'🏆',Shooter:'🚀',Word:'🔤',Learning:'📚',Creative:'🎨',Casual:'🎯',Racing:'🏁',Multiplayer:'👥',Simulation:'⚙️',Cards:'🃏',Board:'🎲',Music:'🎵'};
 const STORE={
   themes:THEMES.map((name,i)=>({name,cost:i<2?0:80+i*15})),
   wallpapers:WALLPAPERS.map((name,i)=>({name,cost:i===0?0:70+i*20})),
@@ -104,7 +104,7 @@ function renderGames(){const a=account();if(!a)return;const q=qs('#searchInput')
 function toggleFavorite(id){updateAccount(a=>{const i=a.favorites.indexOf(id);i>=0?a.favorites.splice(i,1):a.favorites.push(id)});renderGames()}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function objective(g){return g.objective||g.description}
-function howTo(g){return `Use ${g.controls}. Follow the game-specific instructions and complete the displayed level target.`}
+function howTo(g){return g.howTo||`Use ${g.controls}. Follow the game-specific instructions and complete the displayed level target.`}
 function showDetails(g){currentGame=g;const a=account(),p=a.progress[g.id]||{level:1,highScore:0};qs('#detailsContent').innerHTML=`<div style="font-size:3rem">${CATEGORY_ICONS[g.category]||'🎲'}</div><h2>${escapeHtml(g.name)}</h2><p><b>${escapeHtml(g.category)}</b> • ${g.levels} levels • ${g.players===2?'Two players':'One player'}</p><div class="panel-card"><h3>Objective</h3><p>${escapeHtml(objective(g))}</p><h3>How to play</h3><p>${escapeHtml(howTo(g))}</p><h3>Controls</h3><p>${escapeHtml(g.controls)}. Touch controls stay at the bottom on phones and tablets; keyboard and gamepad controls also work on computers.</p><h3>Progress</h3><p>Resume level ${p.level||1} • High score ${p.highScore||0}</p><p><b>Rewards:</b> 1 AG Coin for each new level and 5 bonus coins for completing the game.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button id="startNew" class="primary">Start New Game</button><button id="resumeGame">Resume Level ${p.level||1}</button><button id="detailFavorite">${a.favorites.includes(g.id)?'Remove Favorite':'Add Favorite'}</button></div>`;openDialog(detailsDialog);qs('#startNew').onclick=()=>{detailsDialog.close();startGame(g,1)};qs('#resumeGame').onclick=()=>{detailsDialog.close();startGame(g,p.level||1)};qs('#detailFavorite').onclick=()=>{toggleFavorite(g.id);detailsDialog.close()}}
 
 function openPanel(type){const a=account();if(!a&&type!=='parentPanel')return;const out=qs('#panelContent');if(type==='dailyPanel'){const d=todayDaily(a);out.innerHTML=`<h2>Daily Challenges</h2><div class="panel-grid"><div class="panel-card"><h3>Play 3 games</h3><p>${d.plays}/3</p></div><div class="panel-card"><h3>Complete 2 levels</h3><p>${d.levels}/2</p></div><div class="panel-card"><h3>Reward</h3><p>8 AG Coins + 60 XP</p></div></div><button id="claimDaily" class="primary">Claim Reward</button>`;openDialog(panelDialog);qs('#claimDaily').onclick=()=>claimDaily(a);return}
@@ -148,7 +148,7 @@ function configureControlDock(g){
   const dock=qs('#touchControls'),view=qs('#gameView');
   dock.className='touch-controls';view.classList.remove('desktop-auto-hide','controls-hidden');
   if(g.players!==2)dock.classList.add('single-player');
-  if(['memory','lights','mines','sudoku','tictactoe','connect4','reversi','checkers','battleship','whack','bubble','basketball','archery','golf','drawing','trivia','towerdefense'].includes(g.engine))dock.classList.add('pointer-game');
+  if(['memory','lights','mines','sudoku','tictactoe','connect4','reversi','checkers','battleship','whack','bubble','basketball','archery','golf','drawing','trivia','towerdefense','chesstactics','wordsearch','crossword','scramble','mathsprint','typingrace','rhythm','sequencer','paintnumbers','jigsaw','sliding','pipes','laser','tangram','nonogram','mastermind','codebreaker','yahtzee','solitaire','war','gofish','dicerace','dotsboxes','mancala','morris','gomoku','hex','dominoes','bowling','fishing','cooking','farm','petcare','citybuilder','match3','robotcode'].includes(g.engine))dock.classList.add('pointer-game');
   if(isFinePointer()){dock.classList.add('desktop-auto-hide');view.classList.add('desktop-auto-hide');qs('#controlsToggle').textContent='Show Touch Controls'}else qs('#controlsToggle').textContent='Hide Touch Controls';
 }
 function startGame(g,level){
@@ -185,11 +185,11 @@ class GameSession{
 }
 
 async function syncGameCatalog(){
-  try{const response=await fetch('./games.json?v=8.0',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
+  try{const response=await fetch('./games.json?v=9.0',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
 }
 if('serviceWorker'in navigator)window.addEventListener('load',async()=>{
-  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icons/icon-512.png?v=8.0',{once:true});
-  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=8.0');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
+  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icons/icon-512.png?v=9.0',{once:true});
+  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=9.0');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
   syncGameCatalog();
 });
 window.addEventListener('error',e=>{console.error(e.error||e.message);try{localStorage.setItem('asArcadeLastError',JSON.stringify({time:new Date().toISOString(),message:e.message,stack:e.error?.stack||''}))}catch{}});

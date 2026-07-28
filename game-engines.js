@@ -9,7 +9,8 @@ function createGameEngine(session){
     battleship:battleshipGame,simon:simonGame,whack:whackGame,bubble:bubbleGame,
     basketball:basketballGame,archery:archeryGame,golf:golfGame,racer:racerGame,soccer:soccerGame,
     drawing:drawingGame,trivia:triviaGame,towerdefense:towerDefenseGame,platformer:platformerGame,
-    sokoban:sokobanGame,hangman:hangmanGame,blackjack:blackjackGame,fruitmerge:fruitMergeGame
+    sokoban:sokobanGame,hangman:hangmanGame,blackjack:blackjackGame,fruitmerge:fruitMergeGame,
+    ...(window.EXTRA_GAME_FACTORIES||{})
   };
   const factory=factories[session.game.engine];
   if(!factory)throw new Error(`No gameplay engine exists for ${session.game.name}`);

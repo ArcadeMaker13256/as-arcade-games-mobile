@@ -1,0 +1,41 @@
+A'S ARCADE GAMES — MOBILE 9.0 QA REPORT
+
+CATALOG
+• Registered games: 75
+• Unique names: 75
+• Unique IDs: 75
+• Unique engine IDs: 75
+• Missing engine mappings: 0
+• Generic survival-template entries: 0
+
+STATIC VALIDATION
+• games.json structure: PASS
+• games.js and games.json synchronization: PASS
+• JavaScript syntax: PASS for avatar.js, games.js, game-engines.js, extra-engines.js, app.js, and service-worker.js
+• Required HTML/CSS/PWA files: PASS
+• Logo and icon image validation: PASS
+• Service worker includes the new extra engine file and version 9 cache: PASS
+
+BROWSER STARTUP/INTERACTION QA
+• Browser: headless Chromium
+• Mobile viewport: 390 × 844 with touch enabled
+• Games opened: 75/75
+• Basic keyboard and pointer input supplied to every game: PASS
+• Game Error overlays encountered: 0
+• Uncaught JavaScript errors encountered during the test: 0
+
+CONTROL QA
+• Mobile control dock visible: PASS
+• Mobile control dock position fixed to bottom: PASS
+• Desktop control dock initially auto-hidden: PASS
+• Desktop Touch Controls toggle: PASS
+• Physical keyboard input layer: PASS
+• Mock browser gamepad mapping: PASS
+
+LOGO QA
+• Main logo loaded from assets/arcade-logo.png: PASS
+• High-resolution natural image dimensions detected: PASS
+• Fallback icon path retained: PASS
+
+HONEST LIMITATION
+Automated startup and lightweight interaction checks do not prove that every level can be completed through every possible path. The new edition does, however, use a separate named engine for each game and no longer pads the catalog with the same survival/dodge format.

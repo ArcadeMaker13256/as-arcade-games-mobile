@@ -1,39 +1,75 @@
-A'S ARCADE GAMES — 36 UNIQUE MOBILE GAMES
-===============================================
-
- 1. Snake — Grow by eating fruit without hitting walls or yourself.
- 2. Brick Breaker — Bounce the ball, clear every brick, and protect the bottom of the screen.
- 3. Pong Duel — A complete two-player paddle match with first-to-five scoring.
- 4. Space Invaders — Defend Earth from marching alien formations and return fire.
- 5. Asteroid Patrol — Rotate, thrust, and blast drifting asteroids in open space.
- 6. Flappy Flight — Tap through narrow gaps while gravity pulls you downward.
- 7. Dino Dash — Jump and duck over a changing desert obstacle course.
- 8. Crossy Street — Cross lanes of traffic and rivers one careful step at a time.
- 9. Maze Chase — Collect every pellet in a maze while avoiding roaming ghosts.
-10. Falling Blocks — Rotate and place tetrominoes to clear complete rows.
-11. Number Merge 2048 — Slide equal number tiles together to build the target tile.
-12. Memory Match — Flip cards and remember their positions to find every pair.
-13. Lights Out — Toggle connected lights until the entire board is dark.
-14. Minesweeper — Reveal safe squares using number clues and flag hidden mines.
-15. Mini Sudoku — Fill a 4×4 or 6×6 grid so every row, column, and region is valid.
-16. Tic-Tac-Toe — Play classic three-in-a-row against a computer opponent.
-17. Connect Four — Drop discs into columns and connect four in any direction.
-18. Reversi — Bracket opposing discs to flip them and control the board.
-19. Checkers — Move diagonally, capture by jumping, and crown kings.
-20. Battleship — Find and sink a hidden fleet on a coordinate grid.
-21. Simon Says — Watch an expanding light-and-sound pattern and repeat it.
-22. Whack-a-Mole — Hit popping targets quickly while avoiding decoys.
-23. Bubble Shooter — Aim colored bubbles to create clusters of three or more.
-24. Basketball Shot — Drag to set power and arc, then shoot through the hoop.
-25. Archery Range — Draw the bow and account for wind to hit moving targets.
-26. Mini Golf — Set shot direction and power to guide the ball around obstacles.
-27. Road Racer — Steer through traffic, collect fuel, and reach the finish.
-28. Soccer Showdown — Two players move, tackle, and kick toward opposite goals.
-29. Drawing Studio — Draw freely with multiple colors, brush sizes, undo, and clear.
-30. Trivia Quest — Answer varied questions across math, science, words, and geography.
-31. Tower Defense — Place towers along a route and stop waves from reaching the base.
-32. Platform Adventure — Run, jump, collect gems, and reach the exit platform.
-33. Sokoban — Push crates onto goals without trapping them against walls.
-34. Hangman — Guess letters to reveal a hidden word before mistakes run out.
-35. Blackjack — Build a hand near 21 while deciding when to hit or stand.
-36. Fruit Merge — Drop matching fruit so they combine into larger fruit.
+1. Snake — Reach the target length.
+2. Brick Breaker — Break every brick before losing all balls.
+3. Pong Duel — Score five points before the other player.
+4. Space Invaders — Destroy every invader before they land.
+5. Asteroid Patrol — Clear the asteroid field.
+6. Flappy Flight — Pass the required number of gaps.
+7. Dino Dash — Reach the finish marker.
+8. Crossy Street — Reach the far side safely.
+9. Maze Chase — Clear all pellets.
+10. Falling Blocks — Clear the target number of lines.
+11. Number Merge 2048 — Create the level’s target tile.
+12. Memory Match — Match every pair.
+13. Lights Out — Turn off every light.
+14. Minesweeper — Reveal all non-mine cells.
+15. Mini Sudoku — Fill every blank correctly.
+16. Tic-Tac-Toe — Make three X marks in a line.
+17. Connect Four — Connect four before the computer.
+18. Reversi — Finish with more discs than the computer.
+19. Checkers — Capture all computer pieces.
+20. Battleship — Sink every ship within the shot limit.
+21. Simon Says — Repeat the full target sequence.
+22. Whack-a-Mole — Reach the target score before time expires.
+23. Bubble Shooter — Clear the required number of bubbles.
+24. Basketball Shot — Score the required baskets within the shot limit.
+25. Archery Range — Earn the required target score.
+26. Mini Golf — Sink the ball near or under par.
+27. Road Racer — Reach the finish with fuel remaining.
+28. Soccer Showdown — Score three goals first.
+29. Drawing Studio — Create a drawing and fill the creativity meter.
+30. Trivia Quest — Answer enough questions correctly.
+31. Tower Defense — Stop every wave before the base reaches zero health.
+32. Platform Adventure — Collect every gem and touch the exit.
+33. Sokoban — Place every crate on a goal.
+34. Hangman — Reveal the hidden word with fewer than six mistakes.
+35. Blackjack — Finish closer to 21 than the dealer.
+36. Fruit Merge — Create the target fruit size.
+37. Chess Tactics — Find the highlighted tactical move.
+38. Word Search — Find every listed word.
+39. Crossword Mini — Complete every answer.
+40. Word Scramble — Unscramble the required words.
+41. Math Sprint — Reach the correct-answer target before time runs out.
+42. Typing Race — Finish the text course before the rival.
+43. Rhythm Tap — Complete the song with enough accurate hits.
+44. Music Sequencer — Reproduce the displayed target rhythm.
+45. Paint by Numbers — Color every region correctly.
+46. Jigsaw Puzzle — Place every piece correctly.
+47. Sliding Puzzle — Arrange the numbers in ascending order.
+48. Pipe Connect — Connect the source to the drain with no leaks.
+49. Laser Mirrors — Guide the beam to the target.
+50. Tangram Builder — Fill the silhouette with every piece.
+51. Nonogram — Match every clue exactly.
+52. Mastermind — Crack the code within the allowed guesses.
+53. Code Breaker — Open the lock within the attempt limit.
+54. Yahtzee — Reach the target score in five rounds.
+55. Mini Solitaire — Move every card to the foundations.
+56. War Card Battle — Win more rounds than the computer.
+57. Go Fish — Finish with more books than the computer.
+58. Dice Race — Get both tokens to the finish first.
+59. Dots and Boxes — Claim more boxes than Player 2.
+60. Mancala — Finish with more stones in your store.
+61. Nine Men’s Morris — Reduce the computer to two pieces or block all moves.
+62. Gomoku — Make five in a row before the computer.
+63. Hex Bridge — Connect left to right before the computer connects top to bottom.
+64. Domino Chain — Empty your hand before the computer.
+65. Volleyball Rally — Score seven points first.
+66. Air Hockey — Score five goals first.
+67. Bowling Challenge — Reach the target score in five frames.
+68. Fishing Lake — Catch the required total weight.
+69. Cooking Rush — Serve the required number of correct orders.
+70. Farm Planner — Reach the harvest-value target.
+71. Pet Care — Keep every need healthy through the day.
+72. City Builder — Reach the population target without debt or power shortage.
+73. Mini Pinball — Reach the target score before losing three balls.
+74. Candy Match — Reach the target score within the move limit.
+75. Robot Programmer — Reach the goal using the command limit.
