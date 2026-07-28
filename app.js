@@ -193,11 +193,11 @@ class GameSession{
 }
 
 async function syncGameCatalog(){
-  try{const response=await fetch('./games.json?v=10.0',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
+  try{const response=await fetch('./games.json?v=10.1',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
 }
 if('serviceWorker'in navigator)window.addEventListener('load',async()=>{
-  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icons/icon-512.png?v=10.0',{once:true});
-  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=10.0');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
+  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icons/icon-512.png?v=10.1',{once:true});
+  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=10.1');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
   syncGameCatalog();
 });
 window.addEventListener('error',e=>{console.error(e.error||e.message);try{localStorage.setItem('asArcadeLastError',JSON.stringify({time:new Date().toISOString(),message:e.message,stack:e.error?.stack||''}))}catch{}});
