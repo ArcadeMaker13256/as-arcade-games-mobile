@@ -2,22 +2,6 @@ A'S ARCADE GAMES — GITHUB MOBILE STATIC QA REPORT
 =================================================
 Edition: 7.0-web
 
-PASS — index.html, styles.css, app.js, games.js, manifest and service worker exist
-PASS — JavaScript syntax check: app.js
-PASS — JavaScript syntax check: games.js
-PASS — 190 unique game records in games.json (duplicate Reversi ID corrected)
-PASS — 190 game records embedded in games.js
-PASS — responsive viewport and standalone PWA metadata present
-PASS — 192x192 and 512x512 icons are valid PNG files
-PASS — supplied A's Arcade logo is used
-PASS — touch controls are below the game canvas in the normal document flow
-PASS — Player 1 and Player 2 touch control clusters are present
-PASS — game details include objective, how to play, controls, progress and rewards
-PASS — reward values are 1 AG Coin per new level and 5 per completed game
-PASS — Parental Controls, accounts, favorites, XP, achievements, store,
-       customization, daily challenges and local leaderboards are present
-PASS — service worker references all core files required for offline startup
-
 LIMITATIONS
 -----------
 • This is a static browser/PWA adaptation, not a direct conversion of the
