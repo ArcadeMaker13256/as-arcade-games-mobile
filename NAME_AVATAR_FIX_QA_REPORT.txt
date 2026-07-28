@@ -14,24 +14,6 @@ CORRECTIONS
 • Added 11 avatar feature controls and eight complete avatar presets.
 • Kept avatar ears intentionally smaller than the earlier Windows design.
 
-AUTOMATED CHECKS
-----------------
-PASS — avatar.js JavaScript syntax
-PASS — app.js JavaScript syntax
-PASS — games.js JavaScript syntax
-PASS — service-worker.js JavaScript syntax
-PASS — 190 unique game IDs
-PASS — games.js and games.json contain identical game data
-PASS — all 190 game cards rendered
-PASS — all 190 details-page titles matched their selected game cards
-PASS — account-creation avatar preview rendered
-PASS — account creation and PIN login completed in browser simulation
-PASS — launcher header avatar rendered
-PASS — Avatar Studio rendered 11 customization controls
-PASS — no browser page errors during the tested flows
-
-IMPORTANT
----------
 The mobile edition still uses shared HTML5 Canvas engines for some game groups.
 This report verifies that game cards, titles and instructions stay attached to
 the correct catalog entry. It does not claim that all 190 mobile adaptations are
