@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION='10.8-web';
+const APP_VERSION='10.9-web';
 const DB_KEY='asArcadeMobileDB';
 const AVATARS=AVATAR_PRESETS.map(p=>p.id);
 const THEMES=['neon','sunset','forest','royal','sky','candy','ocean','lava','mint','galaxy','retro','midnight','sports','creative','cozy','cyber','desert','ice','rainbow','monochrome','custom'];
@@ -83,7 +83,7 @@ function refreshAuth(){const sel=qs('#accountSelect');sel.innerHTML='';db.accoun
 function refreshLoginAvatarPreview(){const selected=db.accounts.find(a=>a.id===qs('#accountSelect').value&&a.enabled);qs('#loginAvatarPreview').innerHTML=avatarSVG(selected?selected.avatar:defaultAvatarConfig(),108)}
 function refreshHeader(){const a=account();if(!a)return;qs('#avatarButton').innerHTML=avatarSVG(a.avatar,58);qs('#welcomeText').textContent=`Welcome, ${a.displayName}`;qs('#bannerText').textContent=a.banner;qs('#levelText').textContent=levelFromXp(a.xp);qs('#xpText').textContent=a.xp;qs('#coinText').textContent=a.coins;applyTheme();const d=todayDaily(a);qs('#dailySummary').textContent=`Daily: ${d.plays}/3 games • ${d.levels}/2 levels`}
 function refreshAchievements(a){let changed=false;for(const [name,,test] of ACHIEVEMENTS){if(test(a)&&!a.achievements.includes(name)){a.achievements.push(name);a.xp+=50;changed=true;toast(`🏆 Achievement unlocked: ${name}`)}}if(changed)saveDB(db)}
-function todayKey(){return new Date().toISOString().slice(0,10)}
+function todayKey(date=new Date()){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
 function todayDaily(a){if(a.daily.date!==todayKey())a.daily={date:todayKey(),plays:0,levels:0,claimed:false};return a.daily}
 function claimDaily(a){const d=todayDaily(a);if(d.claimed)return toast('Daily reward already claimed');if(d.plays>=3&&d.levels>=2){d.claimed=true;a.coins+=8;a.xp+=60;saveDB(db);refreshHeader();toast('Daily challenge complete: +8 AG Coins and +60 XP')}else toast('Play 3 games and complete 2 levels first')}
 
@@ -106,6 +106,58 @@ qsa('[data-key]').forEach(button=>{
 });
 window.addEventListener('keydown',e=>{if(session){if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();if(e.code==='Escape'){session.togglePause();return}session.setKey(e.code,true)}});
 window.addEventListener('keyup',e=>session&&session.setKey(e.code,false));
+
+const controllerMenuState={buttons:new Map(),direction:'',nextMoveAt:0,connected:false};
+function controllerStatus(text,connected=false){const el=qs('#controllerStatus');if(!el)return;el.textContent=text;el.classList.toggle('connected',connected)}
+function connectedGamepads(){return [...(navigator.getGamepads?.()||[])].filter(Boolean)}
+function updateControllerStatus(){const pads=connectedGamepads();controllerMenuState.connected=!!pads.length;controllerStatus(pads.length?`🎮 ${pads.length} controller${pads.length===1?'':'s'} connected`:'🎮 Connect a controller',!!pads.length)}
+window.addEventListener('gamepadconnected',e=>{updateControllerStatus();toast(`${e.gamepad?.id||'Controller'} connected`)});
+window.addEventListener('gamepaddisconnected',()=>{updateControllerStatus();toast('Controller disconnected')});
+function menuFocusable(){
+  const scope=[...document.querySelectorAll('dialog[open]')].pop()||Object.values(views).find(v=>v.classList.contains('active'))||document.body;
+  return [...scope.querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"]),.game-card')].filter(el=>{
+    const r=el.getBoundingClientRect(),style=getComputedStyle(el);return style.display!=='none'&&style.visibility!=='hidden'&&r.width>0&&r.height>0;
+  });
+}
+function focusMenuItem(direction){
+  const items=menuFocusable();if(!items.length)return;
+  const active=items.includes(document.activeElement)?document.activeElement:null;
+  if(!active){items[0].focus?.();return}
+  if(active.tagName==='SELECT'&&(direction==='left'||direction==='right')){
+    const delta=direction==='right'?1:-1,next=clamp(active.selectedIndex+delta,0,active.options.length-1);if(next!==active.selectedIndex){active.selectedIndex=next;active.dispatchEvent(new Event('change',{bubbles:true}))}return;
+  }
+  const a=active.getBoundingClientRect(),ax=a.left+a.width/2,ay=a.top+a.height/2;
+  let best=null,bestScore=Infinity;
+  for(const el of items){if(el===active)continue;const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,dx=x-ax,dy=y-ay;
+    const valid=direction==='left'?dx<-6:direction==='right'?dx>6:direction==='up'?dy<-6:dy>6;if(!valid)continue;
+    const primary=direction==='left'||direction==='right'?Math.abs(dx):Math.abs(dy),secondary=direction==='left'||direction==='right'?Math.abs(dy):Math.abs(dx),score=primary+secondary*2.2;
+    if(score<bestScore){best=el;bestScore=score}
+  }
+  (best||items[(items.indexOf(active)+(direction==='left'||direction==='up'?-1:1)+items.length)%items.length]).focus?.();
+}
+function closeTopControllerLayer(){
+  const open=[...document.querySelectorAll('dialog[open]')].pop();if(open){open.close();return}
+  if(views.game.classList.contains('active')&&!session?.running){exitGame();return}
+  if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur?.();
+}
+function menuButtonEdge(pad,index){const key=`${pad.index}:${index}`,pressed=!!pad.buttons[index]?.pressed,was=controllerMenuState.buttons.get(key)||false;controllerMenuState.buttons.set(key,pressed);return pressed&&!was}
+function pollControllerMenus(t){
+  const pads=connectedGamepads();
+  if(!session?.running&&pads.length){
+    const pad=pads[0],x=pad.axes[0]||0,y=pad.axes[1]||0;
+    const direction=(x<-.45||pad.buttons[14]?.pressed)?'left':(x>.45||pad.buttons[15]?.pressed)?'right':(y<-.45||pad.buttons[12]?.pressed)?'up':(y>.45||pad.buttons[13]?.pressed)?'down':'';
+    if(direction&&(direction!==controllerMenuState.direction||t>=controllerMenuState.nextMoveAt)){focusMenuItem(direction);controllerMenuState.nextMoveAt=t+(direction===controllerMenuState.direction?150:320)}
+    controllerMenuState.direction=direction;
+    if(menuButtonEdge(pad,0)){const el=document.activeElement;el?.click?.()}
+    if(menuButtonEdge(pad,1))closeTopControllerLayer();
+    if(menuButtonEdge(pad,9)&&views.game.classList.contains('active')&&session)session.togglePause();
+  }else{
+    controllerMenuState.direction='';
+    for(const pad of pads)for(const index of[0,1,9])controllerMenuState.buttons.set(`${pad.index}:${index}`,!!pad.buttons[index]?.pressed);
+  }
+  requestAnimationFrame(pollControllerMenus);
+}
+updateControllerStatus();requestAnimationFrame(pollControllerMenus);
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;qs('#installBtn').classList.remove('hidden')});
 qs('#installBtn').addEventListener('click',async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;qs('#installBtn').classList.add('hidden')});
 function openArcadeWebsite(){const a=account();if(a&&!a.parental.external)return toast('Website links are disabled by Parental Controls');window.open('https://sites.google.com/view/agsarcadegames/home','_blank','noopener,noreferrer')}
@@ -124,7 +176,7 @@ function openCreateAccount(){
 qs('#saveAccountBtn').addEventListener('click',async()=>{const username=qs('#newUsername').value.trim();const pin=qs('#newPin').value.trim();if(username.length<2)return toast('Username needs at least 2 characters');if(pin.length<4)return toast('PIN needs at least 4 characters');if(db.accounts.some(a=>a.username.toLowerCase()===username.toLowerCase()))return toast('Username already exists');const avatar=readAvatarControls(qs('#newAvatarControls'));const a=newAccount(username,qs('#newDisplayName').value.trim(),await hashText(pin),qs('#newAccountType').value,avatar);db.accounts.push(a);saveDB(db);accountDialog.close();refreshAuth();toast('Account created')});
 
 function renderLauncher(){const cats=['All',...new Set(ARCADE_GAMES.map(g=>g.category))];const sel=qs('#categorySelect');if(!sel.options.length)cats.forEach(c=>sel.add(new Option(c,c)));renderGames()}
-function renderGames(){const a=account();if(!a)return;const q=qs('#searchInput').value.trim().toLowerCase(),cat=qs('#categorySelect').value||'All',fav=qs('#favoritesOnly').checked;let games=ARCADE_GAMES.filter(g=>(!q||(g.name+' '+g.description).toLowerCase().includes(q))&&(cat==='All'||g.category===cat)&&(!fav||a.favorites.includes(g.id)));qs('#gameCount').textContent=`${games.length} of ${ARCADE_GAMES.length} games`;const grid=qs('#gameGrid');grid.innerHTML='';for(const g of games){const card=document.createElement('article');card.className='game-card';card.dataset.gameId=g.id;const p=a.progress[g.id]||{};card.innerHTML=`<button class="favorite" aria-label="Favorite">${a.favorites.includes(g.id)?'★':'☆'}</button><div class="category-icon">${CATEGORY_ICONS[g.category]||'🎲'}</div><h3>${escapeHtml(g.name)} ${g.new?'<span class="new-badge">NEW</span>':''}${supportsMultipleModes(g)?'<span class="mode-badge">1P / 2P</span>':''}</h3><p>${escapeHtml(g.description)}</p><div class="meta"><span>${escapeHtml(g.category)}</span><span>${g.campaign&&g.levels>1?(p.level?`Level ${p.level}`:'New'):(p.wins?`${p.wins} win${p.wins===1?'':'s'}`:'New')}</span></div>`;card.querySelector('.favorite').onclick=e=>{e.stopPropagation();toggleFavorite(g.id)};card.onclick=()=>showDetails(g);grid.append(card)}}
+function renderGames(){const a=account();if(!a)return;const q=qs('#searchInput').value.trim().toLowerCase(),cat=qs('#categorySelect').value||'All',fav=qs('#favoritesOnly').checked;let games=ARCADE_GAMES.filter(g=>(!q||(g.name+' '+g.description).toLowerCase().includes(q))&&(cat==='All'||g.category===cat)&&(!fav||a.favorites.includes(g.id)));qs('#gameCount').textContent=`${games.length} of ${ARCADE_GAMES.length} games`;const grid=qs('#gameGrid');grid.innerHTML='';for(const g of games){const card=document.createElement('article');card.className='game-card';card.tabIndex=0;card.dataset.gameId=g.id;const p=a.progress[g.id]||{};card.innerHTML=`<button class="favorite" aria-label="Favorite">${a.favorites.includes(g.id)?'★':'☆'}</button><div class="category-icon">${CATEGORY_ICONS[g.category]||'🎲'}</div><h3>${escapeHtml(g.name)} ${g.new?'<span class="new-badge">NEW</span>':''}${supportsMultipleModes(g)?'<span class="mode-badge">1P / 2P</span>':''}</h3><p>${escapeHtml(g.description)}</p><div class="meta"><span>${escapeHtml(g.category)}</span><span>${g.campaign&&g.levels>1?(p.level?`Level ${p.level}`:'New'):(p.wins?`${p.wins} win${p.wins===1?'':'s'}`:'New')}</span></div>`;card.querySelector('.favorite').onclick=e=>{e.stopPropagation();toggleFavorite(g.id)};card.onclick=()=>showDetails(g);grid.append(card)}}
 function toggleFavorite(id){updateAccount(a=>{const i=a.favorites.indexOf(id);i>=0?a.favorites.splice(i,1):a.favorites.push(id)});renderGames()}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function objective(g){return g.objective||g.description}
@@ -171,13 +223,13 @@ async function openParentalControls(fromAuth){const pin=prompt(db.adminHash?'Ent
 function renderParentPanel(out){out.innerHTML=`<h2>Parental Controls</h2><p>Manage accounts without knowing the player's PIN. Existing PINs cannot be displayed, but they can be reset.</p><div class="panel-grid">${db.accounts.map(a=>`<div class="panel-card" data-account="${a.id}"><div class="profile-card-heading"><span class="avatar-mini">${avatarSVG(a.avatar,46)}</span><h3>${escapeHtml(a.displayName)}</h3></div><p>${a.type} • ${a.enabled?'Enabled':'Disabled'}</p><label>Daily minutes<input class="limit" type="number" min="0" value="${a.parental.minutes}"></label><label class="check"><input class="multi" type="checkbox" ${a.parental.multiplayer?'checked':''}> Multiplayer allowed</label><label class="check"><input class="spend" type="checkbox" ${a.parental.spending?'checked':''}> AG Coin spending</label><label class="check"><input class="external" type="checkbox" ${a.parental.external?'checked':''}> Website links allowed</label><button class="save-parent">Save</button><button class="reset-pin">Reset Player PIN</button><button class="toggle-account">${a.enabled?'Disable':'Enable'} Account</button></div>`).join('')}</div>`;out.querySelectorAll('[data-account]').forEach(card=>{const a=db.accounts.find(x=>x.id===card.dataset.account);card.querySelector('.save-parent').onclick=()=>{a.parental.minutes=Math.max(0,+card.querySelector('.limit').value||0);a.parental.multiplayer=card.querySelector('.multi').checked;a.parental.spending=card.querySelector('.spend').checked;a.parental.external=card.querySelector('.external').checked;saveDB(db);toast('Parental controls saved')};card.querySelector('.toggle-account').onclick=()=>{a.enabled=!a.enabled;saveDB(db);renderParentPanel(out);refreshAuth()};card.querySelector('.reset-pin').onclick=async()=>{const p=prompt(`Enter a new PIN for ${a.displayName}`);if(p&&p.length>=4){a.pinHash=await hashText(p);saveDB(db);toast('Player PIN reset')}}})}
 
 function isFinePointer(){return innerWidth>900&&matchMedia('(hover:hover) and (pointer:fine)').matches}
-function toggleTouchControls(force){
+function toggleTouchControls(forceVisible){
   const dock=qs('#touchControls'),view=qs('#gameView');
-  const hide=typeof force==='boolean'?!force:dock.classList.contains('desktop-auto-hide')||dock.classList.contains('controls-hidden');
-  dock.classList.toggle('desktop-auto-hide',!hide&&isFinePointer());dock.classList.toggle('controls-hidden',false);
-  view.classList.toggle('desktop-auto-hide',!hide&&isFinePointer());view.classList.toggle('controls-hidden',false);
-  if(hide){dock.classList.remove('desktop-auto-hide','controls-hidden');view.classList.remove('desktop-auto-hide','controls-hidden')}
-  qs('#controlsToggle').textContent=dock.offsetParent===null?'Show Touch Controls':'Hide Touch Controls';
+  const currentlyHidden=dock.classList.contains('desktop-auto-hide')||dock.classList.contains('controls-hidden');
+  const shouldShow=typeof forceVisible==='boolean'?forceVisible:currentlyHidden;
+  dock.classList.remove('desktop-auto-hide');view.classList.remove('desktop-auto-hide');
+  dock.classList.toggle('controls-hidden',!shouldShow);view.classList.toggle('controls-hidden',!shouldShow);
+  qs('#controlsToggle').textContent=shouldShow?'Hide Touch Controls':'Show Touch Controls';
 }
 function configureControlDock(g){
   const dock=qs('#touchControls'),view=qs('#gameView');
@@ -190,7 +242,7 @@ function startGame(g,level,mode=null){
   const a=account();if(!a)return;const campaign=!!g.campaign&&g.levels>1;level=campaign?clamp(Number(level)||1,1,g.levels):1;mode=mode||(g.players===2?'2P':'1P');if(mode==='2P'&&!a.parental.multiplayer)return toast('Multiplayer is blocked by Parental Controls');
   const d=todayDaily(a);d.plays++;a.stats.plays++;const prog=a.progress[g.id]||(a.progress[g.id]={level:1,completedLevels:[],highScore:0,finished:false,plays:0,wins:0});prog.plays++;saveDB(db);
   currentGame=g;showView('game');qs('#gameTitle').textContent=g.name;qs('#gameLevelText').textContent=campaign?`Level ${level} of ${g.levels}`:(g.id==='drawing-studio'||g.id==='music-sequencer'?'Creative Mode':'Single Match');selectedGameMode=mode;configureControlDock(g);
-  qs('#gameInstructions').innerHTML=`<h3>${escapeHtml(g.name)} — Instructions</h3><p><b>Objective:</b> ${escapeHtml(objective(g))}</p><p><b>How to play:</b> ${escapeHtml(howTo(g))}</p><p><b>Computer controls:</b> ${escapeHtml(g.controls)}.</p><p><b>Touchscreen:</b> Use the fixed control dock at the bottom plus direct taps or drags on the game canvas where appropriate.</p><p><b>Gamepad:</b> Left stick/D-pad moves, A is the primary action, B is the secondary action, and Start pauses.</p><p><b>Mode:</b> ${mode==='2P'?'Two players on this device':'Single player'}.</p><p><b>Game pace:</b> ${escapeHtml((a.settings.gamePace||'standard').replace(/^./,c=>c.toUpperCase()))}. Change it under Customize & Accessibility.</p><p><b>Rewards:</b> ${campaign?'1 AG Coin for each newly completed level and 5 bonus coins for finishing the campaign.':'1 AG Coin for a win and a one-time 5-coin first-win bonus.'}</p>`;
+  qs('#gameInstructions').innerHTML=`<h3>${escapeHtml(g.name)} — Instructions</h3><p><b>Objective:</b> ${escapeHtml(objective(g))}</p><p><b>How to play:</b> ${escapeHtml(howTo(g))}</p><p><b>Computer controls:</b> ${escapeHtml(g.controls)}.</p><p><b>Touchscreen:</b> Use the fixed control dock at the bottom plus direct taps or drags on the game canvas where appropriate.</p><p><b>Gamepad:</b> Left stick/D-pad moves, A is the primary action, B is the secondary action, and Start pauses. For tap/drag games, use the right stick as a cursor and press X or the right trigger to click and drag.</p><p><b>Mode:</b> ${mode==='2P'?'Two players on this device':'Single player'}.</p><p><b>Game pace:</b> ${escapeHtml((a.settings.gamePace||'standard').replace(/^./,c=>c.toUpperCase()))}. Change it under Customize & Accessibility.</p><p><b>Rewards:</b> ${campaign?'1 AG Coin for each newly completed level and 5 bonus coins for finishing the campaign.':'1 AG Coin for a win and a one-time 5-coin first-win bonus.'}</p>`;
   session=new GameSession(g,level,mode);session.start();
 }
 function exitGame(){if(session){session.stop();session=null}showView('launcher');refreshHeader();renderGames()}
@@ -205,33 +257,43 @@ function failLevel(score=0){if(!session||session.completed)return;session.comple
 
 class GameSession{
   constructor(game,level,mode='1P'){
-    this.game=game;this.level=level;this.mode=mode;this.canvas=qs('#gameCanvas');this.ctx=this.canvas.getContext('2d');this.keys=new Set();this.running=false;this.paused=false;this.completed=false;this.reward=0;this.last=0;this.elapsed=0;this.pointer={x:0,y:0,down:false};this.gamepadKeys=new Set();this.prevGamepadButtons={};this.resultTimer=null;const userScale=({'very-slow':.78,relaxed:.9,standard:1,challenge:1.12}[account()?.settings.gamePace||'standard']||1);this.paceScale=userScale*(ENGINE_SPEED_SCALE[game.engine]||1);
+    this.game=game;this.level=level;this.mode=mode;this.canvas=qs('#gameCanvas');this.ctx=this.canvas.getContext('2d');this.keys=new Set();this.running=false;this.paused=false;this.completed=false;this.reward=0;this.last=0;this.elapsed=0;this.pointer={x:0,y:0,down:false};this.gamepadPointer={x:W/2,y:H/2,down:false,visible:false};this.gamepadKeys=new Set();this.prevGamepadButtons={};this.resultTimer=null;const userScale=({'very-slow':.78,relaxed:.9,standard:1,challenge:1.12}[account()?.settings.gamePace||'standard']||1);this.paceScale=userScale*(ENGINE_SPEED_SCALE[game.engine]||1);
     this.boundPointer=e=>this.handlePointer(e);this.boundPointerUp=e=>{this.pointer.down=false;this.engine.pointer?.(this.pointer,'pointerup');this.engine.pointerUp?.(this.pointer)};this.engine=createGameEngine(this);
   }
   start(){this.running=true;this.canvas.addEventListener('pointerdown',this.boundPointer);this.canvas.addEventListener('pointermove',this.boundPointer);window.addEventListener('pointerup',this.boundPointerUp);this.engine.init?.();this.last=performance.now();requestAnimationFrame(t=>this.loop(t))}
-  stop(){clearTimeout(this.resultTimer);this.resultTimer=null;this.running=false;this.canvas.removeEventListener('pointerdown',this.boundPointer);this.canvas.removeEventListener('pointermove',this.boundPointer);window.removeEventListener('pointerup',this.boundPointerUp);for(const k of this.gamepadKeys)this.setKey(k,false);this.engine.cleanup?.();qs('#gameOverlay').classList.add('hidden')}
+  stop(){clearTimeout(this.resultTimer);this.resultTimer=null;this.running=false;this.canvas.removeEventListener('pointerdown',this.boundPointer);this.canvas.removeEventListener('pointermove',this.boundPointer);window.removeEventListener('pointerup',this.boundPointerUp);for(const k of this.gamepadKeys)this.setKey(k,false);if(this.gamepadPointer.down)this.releaseGamepadPointer();this.engine.cleanup?.();qs('#gameOverlay').classList.add('hidden')}
   setKey(key,on){if(!on){this.keys.delete(key);this.engine.keyUp?.(key);return}if(!this.running||this.paused||this.completed)return;if(!this.keys.has(key))this.engine.keyDown?.(key);this.keys.add(key)}
   pressed(...keys){return keys.some(k=>this.keys.has(k))}
   handlePointer(e){if(!this.running||this.paused||this.completed)return;const r=this.canvas.getBoundingClientRect();this.pointer.x=(e.clientX-r.left)*this.canvas.width/r.width;this.pointer.y=(e.clientY-r.top)*this.canvas.height/r.height;this.pointer.id=e.pointerId;this.pointer.type=e.pointerType||'mouse';this.pointer.down=e.type==='pointerdown'||this.pointer.down;if(e.type==='pointerdown')this.canvas.setPointerCapture?.(e.pointerId);this.engine.pointer?.(this.pointer,e.type)}
+  sendGamepadPointer(type){const p=this.gamepadPointer;this.pointer={x:p.x,y:p.y,down:p.down,type:'gamepad',id:'gamepad'};this.engine.pointer?.(this.pointer,type);if(type==='pointerup')this.engine.pointerUp?.(this.pointer)}
+  releaseGamepadPointer(){if(!this.gamepadPointer.down)return;this.gamepadPointer.down=false;this.sendGamepadPointer('pointerup')}
+  pollGamepadPointer(pad){
+    if(!pad)return;const p=this.gamepadPointer,rx=Math.abs(pad.axes[2]||0)>.18?(pad.axes[2]||0):0,ry=Math.abs(pad.axes[3]||0)>.18?(pad.axes[3]||0):0;
+    if(rx||ry){p.visible=true;p.x=clamp(p.x+rx*11,0,W);p.y=clamp(p.y+ry*11,0,H);if(p.down)this.sendGamepadPointer('pointermove')}
+    const click=!!pad.buttons[2]?.pressed||Number(pad.buttons[7]?.value||0)>.45,old=!!this.prevGamepadButtons.pointerClick;
+    if(click&&!old&&!this.paused&&!this.completed){p.visible=true;p.down=true;this.sendGamepadPointer('pointerdown')}
+    if(!click&&old)this.releaseGamepadPointer();this.prevGamepadButtons.pointerClick=click;
+  }
+  drawGamepadPointer(){const p=this.gamepadPointer;if(!p.visible)return;const c=this.ctx;c.save();c.lineWidth=3;c.strokeStyle='#ffffff';c.fillStyle=p.down?'#ffdf5d':'#36ddff';c.beginPath();c.arc(p.x,p.y,p.down?11:9,0,Math.PI*2);c.fill();c.stroke();c.beginPath();c.moveTo(p.x-16,p.y);c.lineTo(p.x+16,p.y);c.moveTo(p.x,p.y-16);c.lineTo(p.x,p.y+16);c.stroke();c.restore()}
   pollGamepads(){
     if(this.completed||!this.running)return;
     const pads=navigator.getGamepads?.()||[];const desired=new Set();
     const mapPad=(pad,index)=>{if(!pad)return;const left=index===0?'ArrowLeft':'KeyA',right=index===0?'ArrowRight':'KeyD',up=index===0?'ArrowUp':'KeyW',down=index===0?'ArrowDown':'KeyS',a=index===0?'Space':'KeyF',b=index===0?'Enter':'KeyG';const ax=pad.axes[0]||0,ay=pad.axes[1]||0;if(ax<-.35||pad.buttons[14]?.pressed)desired.add(left);if(ax>.35||pad.buttons[15]?.pressed)desired.add(right);if(ay<-.35||pad.buttons[12]?.pressed)desired.add(up);if(ay>.35||pad.buttons[13]?.pressed)desired.add(down);if(pad.buttons[0]?.pressed)desired.add(a);if(pad.buttons[1]?.pressed)desired.add(b);const start=!!pad.buttons[9]?.pressed,old=!!this.prevGamepadButtons[`${index}:start`];if(start&&!old)this.togglePause();this.prevGamepadButtons[`${index}:start`]=start};
-    mapPad(pads[0],0);if(this.mode==='2P')mapPad(pads[1]||pads[0],1);
+    mapPad(pads[0],0);if(this.mode==='2P'&&pads[1])mapPad(pads[1],1);this.pollGamepadPointer(pads[0]);
     for(const k of this.gamepadKeys)if(!desired.has(k))this.setKey(k,false);for(const k of desired)if(!this.gamepadKeys.has(k))this.setKey(k,true);this.gamepadKeys=desired;
   }
-  loop(t){if(!this.running)return;this.pollGamepads();const dt=Math.min(.04,(t-this.last)/1000||0);this.last=t;if(!this.paused&&!this.completed){const gameDt=this.game.engine==='crossy'?dt:dt*this.paceScale;this.elapsed+=gameDt;try{this.engine.update?.(gameDt)}catch(err){console.error(err);this.showError(err);return}}if(!this.running)return;try{this.engine.draw(this.ctx)}catch(err){console.error(err);this.showError(err);return}requestAnimationFrame(x=>this.loop(x))}
+  loop(t){if(!this.running)return;this.pollGamepads();const dt=Math.min(.04,(t-this.last)/1000||0);this.last=t;if(!this.paused&&!this.completed){const gameDt=this.game.engine==='crossy'?dt:dt*this.paceScale;this.elapsed+=gameDt;try{this.engine.update?.(gameDt)}catch(err){console.error(err);this.showError(err);return}}if(!this.running)return;try{this.engine.draw(this.ctx);this.drawGamepadPointer()}catch(err){console.error(err);this.showError(err);return}requestAnimationFrame(x=>this.loop(x))}
   togglePause(){if(this.completed)return;this.paused=!this.paused;const o=qs('#gameOverlay');if(this.paused){o.innerHTML=`<div class="overlay-card"><h2>Game Paused</h2><p>${escapeHtml(this.game.name)}</p><button id="resumeBtn" class="primary">Resume</button><button id="restartBtn">Restart Level</button><button id="quitBtn">Return to Launcher</button></div>`;o.classList.remove('hidden');qs('#resumeBtn').onclick=()=>this.togglePause();qs('#restartBtn').onclick=()=>{const g=this.game,l=this.level,mode=this.mode;this.stop();session=new GameSession(g,l,mode);session.start()};qs('#quitBtn').onclick=exitGame}else o.classList.add('hidden')}
   showResult(win,score){this.running=false;this.keys.clear();this.gamepadKeys.clear();this.pointer.down=false;const campaign=!!this.game.campaign&&this.game.levels>1,o=qs('#gameOverlay'),next=campaign&&this.level<this.game.levels,title=win?(campaign?'Level Complete!':'Match Complete!'):(campaign?'Campaign Restart':'Try Again');o.innerHTML=`<div class="overlay-card"><h2>${title}</h2><p>Score: ${Math.round(score)}</p>${win?'':`<p>${campaign?'You lost. Restarting at Level 1.':'Restarting the match'} automatically.</p>`}${win?`<p>AG Coins earned: ${this.reward}</p>`:''}<button id="resultMain" class="primary">${win&&next?'Next Level':win?(campaign?'Replay Level':'Play Again'):(campaign?'Restart at Level 1':'Restart Now')}</button><button id="resultLauncher">Return to Launcher</button></div>`;o.classList.remove('hidden');const restart=()=>{const g=this.game,l=win?(next?this.level+1:this.level):(campaign?1:this.level),mode=this.mode;this.stop();session=new GameSession(g,l,mode);qs('#gameLevelText').textContent=campaign?`Level ${l} of ${g.levels}`:(g.id==='drawing-studio'||g.id==='music-sequencer'?'Creative Mode':'Single Match');selectedGameMode=mode;configureControlDock(g);session.start()};qs('#resultMain').onclick=restart;qs('#resultLauncher').onclick=exitGame;if(!win)this.resultTimer=setTimeout(()=>{if(session===this&&this.completed)restart()},2200)}
   showError(err){this.running=false;const o=qs('#gameOverlay');o.innerHTML=`<div class="overlay-card"><h2>Game Error</h2><p>${escapeHtml(err.message||String(err))}</p><button id="errorBack">Return to Launcher</button></div>`;o.classList.remove('hidden');qs('#errorBack').onclick=exitGame}
 }
 
 async function syncGameCatalog(){
-  try{const response=await fetch('./games.json?v=10.8',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
+  try{const response=await fetch('./games.json?v=10.9',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
 }
 if('serviceWorker'in navigator)window.addEventListener('load',async()=>{
-  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icon-512.png?v=10.8',{once:true});
-  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=10.8');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
+  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icon-512.png?v=10.9',{once:true});
+  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=10.9');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
   syncGameCatalog();
 });
 window.addEventListener('error',e=>{console.error(e.error||e.message);try{localStorage.setItem('asArcadeLastError',JSON.stringify({time:new Date().toISOString(),message:e.message,stack:e.error?.stack||''}))}catch{}});

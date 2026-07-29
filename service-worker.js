@@ -1,5 +1,5 @@
-const CACHE='as-arcade-mobile-v10-8-touch-avatar-crossy';
-const CORE=['./','./index.html','./styles.css?v=10.8','./avatar.js?v=10.8','./games.js?v=10.8','./games.json?v=10.8','./game-engines.js?v=10.8','./extra-engines.js?v=10.8','./app.js?v=10.8','./manifest.webmanifest?v=10.8','./arcade-logo.png?v=10.8','./favicon-32.png?v=10.8','./apple-touch-icon.png?v=10.8','./apple-touch-icon-v10.png?v=10.8','./icon-192.png?v=10.8','./icon-512.png?v=10.8','./maskable-192.png?v=10.8','./maskable-512.png?v=10.8'];
+const CACHE='as-arcade-mobile-v10-9-controller-avatar-crossy';
+const CORE=['./','./index.html','./styles.css?v=10.9','./avatar.js?v=10.9','./games.js?v=10.9','./games.json?v=10.9','./game-engines.js?v=10.9','./extra-engines.js?v=10.9','./app.js?v=10.9','./manifest.webmanifest?v=10.9','./arcade-logo.png?v=10.9','./favicon-32.png?v=10.9','./apple-touch-icon.png?v=10.9','./apple-touch-icon-v10.png?v=10.9','./icon-192.png?v=10.9','./icon-512.png?v=10.9','./maskable-192.png?v=10.9','./maskable-512.png?v=10.9'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
