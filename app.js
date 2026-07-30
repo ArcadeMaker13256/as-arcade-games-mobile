@@ -1,13 +1,13 @@
 'use strict';
 
-const APP_VERSION='10.11-web';
+const APP_VERSION='11.0-web';
 const DB_KEY='asArcadeMobileDB';
 const AVATARS=AVATAR_PRESETS.map(p=>p.id);
 const THEMES=['neon','sunset','forest','royal','sky','candy','ocean','lava','mint','galaxy','retro','midnight','sports','creative','cozy','cyber','desert','ice','rainbow','monochrome','custom'];
 const WALLPAPERS=['none','grid','stars','candy','waves','circuit','confetti','sunset','clouds','checker','aurora','space','neon-city','mountains','ocean-floor','pixel-sky','sports-field','music-stage','castle','jungle','snow','rainbow'];
 const BANNERS=['Arcade Explorer','High Score Hero','Puzzle Master','Racing Champion','Creative Star','Family Game Night','Adventure Ace','Strategy Captain','Galaxy Gamer','Sports Legend','Cozy Player','Tech Wizard','Music Maker','Board Game Boss','Level Champion','Arcade Superstar','Speed Runner','Trophy Hunter','Coin Captain','Touchscreen Pro','Keyboard Hero','Controller Champion','Daily Challenger','Multiplayer MVP','Simulation Star','Word Wizard','Card Shark','Retro Legend','Neon Knight','Ultimate Arcade Legend'];
 const CATEGORY_ICONS={Arcade:'🕹️',Adventure:'🗺️',Puzzle:'🧩',Strategy:'♟️',Sports:'🏆',Shooter:'🚀',Word:'🔤',Learning:'📚',Creative:'🎨',Casual:'🎯',Racing:'🏁',Multiplayer:'👥',Simulation:'⚙️',Cards:'🃏',Board:'🎲',Music:'🎵'};
-const MULTIMODE_ENGINES=new Set(['pong','soccer','dotsboxes','volleyball','airhockey','tictactoe','connect4','reversi','checkers','mancala','gomoku','hex']);
+const MULTIMODE_ENGINES=new Set(['pong','soccer','dotsboxes','volleyball','airhockey','tictactoe','connect4','reversi','checkers','mancala','gomoku','hex','tabletennis']);
 const ENGINE_SPEED_SCALE={snake:1.16,brick:1.12,pong:1.08,invaders:1.12,asteroids:1.1,flappy:1.02,dino:1.08,pacmaze:1.16,tetris:1.1,simon:1.05,whack:1.08,towerdefense:1.12,platformer:1.08,fruitmerge:1.04,racer:1.1,soccer:1.05,volleyball:1.06,airhockey:1.08,pinball:1.1,rhythm:1.03,typingrace:1.02,mathsprint:1.04,cooking:1.02,fishing:.98,petcare:1,citybuilder:1};
 let selectedGameMode='1P';
 
@@ -24,7 +24,7 @@ const ACHIEVEMENTS=[
  ['Level Learner','Complete 10 levels',a=>levelCount(a)>=10],['Level Explorer','Complete 25 levels',a=>levelCount(a)>=25],['Level Adventurer','Complete 50 levels',a=>levelCount(a)>=50],['Century Club','Complete 100 levels',a=>levelCount(a)>=100],['Level Master','Complete 250 levels',a=>levelCount(a)>=250],['Level Legend','Complete 500 levels',a=>levelCount(a)>=500],
  ['Game Finisher','Complete one game',a=>completedCount(a)>=1],['Campaign Collector','Complete 3 games',a=>completedCount(a)>=3],['Campaign Champion','Complete 5 games',a=>completedCount(a)>=5],['Ten Games Down','Complete 10 games',a=>completedCount(a)>=10],['Completion Expert','Complete 20 games',a=>completedCount(a)>=20],
  ['First Victory','Earn your first recorded win',a=>winCount(a)>=1],['Winning Streak','Earn 5 wins',a=>winCount(a)>=5],['Family Champion','Earn 10 wins',a=>winCount(a)>=10],['Victory Veteran','Earn 25 wins',a=>winCount(a)>=25],['Victory Legend','Earn 50 wins',a=>winCount(a)>=50],
- ['Game Sampler','Try 10 different games',a=>gameCount(a)>=10],['Genre Explorer','Try 20 different games',a=>gameCount(a)>=20],['Arcade Explorer','Try 35 different games',a=>gameCount(a)>=35],['Library Traveler','Try 50 different games',a=>gameCount(a)>=50],['Played Them All','Try all 75 games',a=>gameCount(a)>=75],
+ ['Game Sampler','Try 10 different games',a=>gameCount(a)>=10],['Genre Explorer','Try 20 different games',a=>gameCount(a)>=20],['Arcade Explorer','Try 35 different games',a=>gameCount(a)>=35],['Library Traveler','Try 50 different games',a=>gameCount(a)>=50],['Played Them All','Try all 100 games',a=>gameCount(a)>=100],
  ['Coin Starter','Own 30 AG Coins',a=>a.coins>=30],['Coin Collector','Own 60 AG Coins',a=>a.coins>=60],['Coin Saver','Own 100 AG Coins',a=>a.coins>=100],['Coin Vault','Own 250 AG Coins',a=>a.coins>=250],['Coin Royalty','Own 500 AG Coins',a=>a.coins>=500],
  ['Score Rookie','Reach a 1,000 high score',a=>highScore(a)>=1000],['Score Chaser','Reach a 2,500 high score',a=>highScore(a)>=2500],['Score Star','Reach a 5,000 high score',a=>highScore(a)>=5000],['Score Hero','Reach a 10,000 high score',a=>highScore(a)>=10000],['Score Legend','Reach a 25,000 high score',a=>highScore(a)>=25000],
  ['Arcade Level 5','Reach player level 5',a=>levelFromXp(a.xp)>=5],['Arcade Level 10','Reach player level 10',a=>levelFromXp(a.xp)>=10],['Arcade Level 15','Reach player level 15',a=>levelFromXp(a.xp)>=15],['Arcade Level 20','Reach player level 20',a=>levelFromXp(a.xp)>=20],['Arcade Level 30','Reach player level 30',a=>levelFromXp(a.xp)>=30],
@@ -34,7 +34,7 @@ const ACHIEVEMENTS=[
 ];
 const qs=s=>document.querySelector(s);const qsa=s=>[...document.querySelectorAll(s)];
 const views={auth:qs('#authView'),launcher:qs('#launcherView'),game:qs('#gameView')};
-const detailsDialog=qs('#detailsDialog'),panelDialog=qs('#panelDialog'),accountDialog=qs('#accountDialog');
+const detailsDialog=qs('#detailsDialog'),panelDialog=qs('#panelDialog'),accountDialog=qs('#accountDialog'),controllerDialog=qs('#controllerDialog');
 let deferredInstall=null;let currentGame=null;let session=null;let activeAccountId=null;
 
 function defaultDB(){return{version:1,adminHash:'',active:null,accounts:[]}}
@@ -108,67 +108,105 @@ window.addEventListener('keydown',e=>{if(session){if(['ArrowUp','ArrowDown','Arr
 window.addEventListener('keyup',e=>session&&session.setKey(e.code,false));
 
 const controllerMenuState={buttons:new Map(),direction:'',nextMoveAt:0,connected:false};
+const controllerManager={
+  activePadIndex:null,profiles:{},motion:new Map(),calibration:null,lastDebug:0,
+  isAppleMobile:/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),
+  standalone:window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true,
+  framed:window.top!==window.self
+};
+try{controllerManager.profiles=JSON.parse(localStorage.getItem('asArcadeControllerProfiles')||'{}')||{}}catch{controllerManager.profiles={}}
 function controllerStatus(text,connected=false){const el=qs('#controllerStatus');if(!el)return;el.textContent=text;el.classList.toggle('connected',connected)}
-function connectedGamepads(){return [...(navigator.getGamepads?.()||[])].filter(pad=>pad&&pad.connected!==false)}
+function rawGamepads(){try{return typeof navigator.getGamepads==='function'?[...(navigator.getGamepads()||[])]:[]}catch{return[]}}
+function connectedGamepads(){const pads=rawGamepads().filter(pad=>pad&&pad.connected!==false);if(pads.length&&controllerManager.activePadIndex===null)controllerManager.activePadIndex=pads[0].index;return pads}
 function gamepadButtonPressed(pad,index){const b=pad?.buttons?.[index];return !!(b&&(b.pressed||Number(b.value||0)>.5))}
-function gamepadDirections(pad){
-  const axes=pad?.axes||[],dead=.22;let x=Number(axes[0]||0),y=Number(axes[1]||0);
-  let left=x<-dead||gamepadButtonPressed(pad,14),right=x>dead||gamepadButtonPressed(pad,15),up=y<-dead||gamepadButtonPressed(pad,12),down=y>dead||gamepadButtonPressed(pad,13);
-  // Some Nintendo/DirectInput drivers expose the D-pad as axes 6/7 instead of buttons 12-15.
-  if(!left&&!right&&!up&&!down&&axes.length>7){const hx=Number(axes[6]||0),hy=Number(axes[7]||0);left=hx<-.5;right=hx>.5;up=hy<-.5;down=hy>.5}
-  // Other non-standard mappings expose the D-pad as a single POV/hat axis (usually axis 9).
-  if(!left&&!right&&!up&&!down&&pad?.mapping!=='standard'){
-    const hats=[];for(let i=8;i<axes.length;i++)hats.push(Number(axes[i]));
-    const states=[[-1,'up'],[-.7142857,'upRight'],[-.4285714,'right'],[-.1428571,'downRight'],[.1428571,'down'],[.4285714,'downLeft'],[.7142857,'left'],[1,'upLeft']];
-    for(const hat of hats){const match=states.find(([value])=>Math.abs(hat-value)<.11);if(!match)continue;const name=match[1];left=name.includes('Left')||name==='left';right=name.includes('Right')||name==='right';up=name.includes('up')||name==='up';down=name.includes('down')||name==='down';break}
-  }
-  return{left,right,up,down,x,y};
+function padKey(pad){return String(pad?.id||'unknown').replace(/\s+/g,' ').trim().slice(0,160)}
+function saveControllerProfiles(){try{localStorage.setItem('asArcadeControllerProfiles',JSON.stringify(controllerManager.profiles))}catch{}}
+function controllerProfile(pad){return controllerManager.profiles[padKey(pad)]||null}
+function axisValue(pad,index){const value=Number(pad?.axes?.[index]);return Number.isFinite(value)?value:0}
+function updateAxisMotion(pad){
+  if(!pad)return;const key=pad.index,count=pad.axes?.length||0;let state=controllerManager.motion.get(key);
+  if(!state||state.count!==count){state={count,center:[],min:[],max:[],last:[],pair:null,frames:0};for(let i=0;i<count;i++){const v=axisValue(pad,i);state.center[i]=v;state.min[i]=v;state.max[i]=v;state.last[i]=v}controllerManager.motion.set(key,state)}
+  state.frames++;
+  for(let i=0;i<count;i++){const v=axisValue(pad,i);state.min[i]=Math.min(state.min[i],v);state.max[i]=Math.max(state.max[i],v);state.last[i]=v;if(state.frames<20&&Math.abs(v-state.center[i])<.12)state.center[i]=state.center[i]*.85+v*.15}
+  return state;
 }
-function updateControllerStatus(){const pads=connectedGamepads();controllerMenuState.connected=!!pads.length;controllerStatus(pads.length?`🎮 ${pads.length} controller${pads.length===1?'':'s'} connected`:'🎮 Connect a controller',!!pads.length)}
-window.addEventListener('gamepadconnected',e=>{updateControllerStatus();toast(`${e.gamepad?.id||'Controller'} connected`)});
-window.addEventListener('gamepaddisconnected',()=>{updateControllerStatus();toast('Controller disconnected')});
+function autoAxisPair(pad){
+  const axes=pad?.axes||[],state=updateAxisMotion(pad);if(axes.length<2)return[0,1];
+  const profile=controllerProfile(pad);if(profile&&Number.isInteger(profile.xAxis)&&Number.isInteger(profile.yAxis)&&profile.xAxis<axes.length&&profile.yAxis<axes.length)return[profile.xAxis,profile.yAxis];
+  const pairs=[];for(let i=0;i+1<axes.length;i+=2)pairs.push([i,i+1]);for(let i=0;i+1<axes.length;i++)if(!pairs.some(p=>p[0]===i&&p[1]===i+1))pairs.push([i,i+1]);
+  let best=state.pair&&state.pair[1]<axes.length?state.pair:pairs[0],bestScore=-1;
+  for(const [a,b] of pairs){const rangeA=state.max[a]-state.min[a],rangeB=state.max[b]-state.min[b],devA=Math.abs(axisValue(pad,a)-state.center[a]),devB=Math.abs(axisValue(pad,b)-state.center[b]);let score=(rangeA+rangeB)*2.5+Math.hypot(devA,devB)*2;if(a===0&&b===1)score+=pad.mapping==='standard'?1.1:.35;if(a>=6)score-=.45;if(Math.abs(state.center[a])>.72&&rangeA<.25)score-=1.2;if(Math.abs(state.center[b])>.72&&rangeB<.25)score-=1.2;if(score>bestScore){bestScore=score;best=[a,b]}}
+  state.pair=best;return best;
+}
+function normalizedLeftStick(pad){
+  const profile=controllerProfile(pad),state=updateAxisMotion(pad),[xAxis,yAxis]=autoAxisPair(pad);let x=axisValue(pad,xAxis),y=axisValue(pad,yAxis);
+  if(profile){x=(x-Number(profile.xCenter||0))*Number(profile.xSign||1);y=(y-Number(profile.yCenter||0))*Number(profile.ySign||1)}else{x-=Number(state?.center?.[xAxis]||0);y-=Number(state?.center?.[yAxis]||0)}
+  const dead=.12;const clean=v=>Math.abs(v)<dead?0:clamp((Math.abs(v)-dead)/(1-dead)*Math.sign(v),-1,1);return{x:clean(x),y:clean(y),xAxis,yAxis};
+}
+function hatDirections(pad){
+  const axes=pad?.axes||[];let left=false,right=false,up=false,down=false;
+  if(axes.length>7){const hx=axisValue(pad,6),hy=axisValue(pad,7);left=hx<-.55;right=hx>.55;up=hy<-.55;down=hy>.55}
+  if(!left&&!right&&!up&&!down&&pad?.mapping!=='standard'){
+    for(let i=8;i<axes.length;i++){const hat=axisValue(pad,i),states=[[-1,'up'],[-.7142857,'upRight'],[-.4285714,'right'],[-.1428571,'downRight'],[.1428571,'down'],[.4285714,'downLeft'],[.7142857,'left'],[1,'upLeft']],match=states.find(([value])=>Math.abs(hat-value)<.11);if(!match)continue;const name=match[1];left=name.includes('Left')||name==='left';right=name.includes('Right')||name==='right';up=name.includes('up')||name==='up';down=name.includes('down')||name==='down';break}
+  }
+  return{left,right,up,down};
+}
+function gamepadDirections(pad){
+  const stick=normalizedLeftStick(pad),hat=hatDirections(pad);return{
+    left:stick.x<0||gamepadButtonPressed(pad,14)||hat.left,right:stick.x>0||gamepadButtonPressed(pad,15)||hat.right,
+    up:stick.y<0||gamepadButtonPressed(pad,12)||hat.up,down:stick.y>0||gamepadButtonPressed(pad,13)||hat.down,
+    x:stick.x,y:stick.y,xAxis:stick.xAxis,yAxis:stick.yAxis
+  };
+}
+function activeGamepads(){const pads=connectedGamepads();if(!pads.length)return[];const active=pads.find(p=>p.index===controllerManager.activePadIndex);return active?[active,...pads.filter(p=>p!==active)]:pads}
+function controllerEnvironmentHelp(){
+  if(typeof navigator.getGamepads!=='function')return'This browser does not expose the Gamepad API. On iPad, update iPadOS and use Safari.';
+  if(controllerManager.framed)return'This arcade is running inside another page. Open the GitHub Pages arcade directly in a new Safari tab because embedded pages can be denied controller access.';
+  if(controllerManager.isAppleMobile&&controllerManager.standalone)return'On iPad, controller access can fail in a Home Screen web app. Open the same HTTPS address in a normal Safari tab, then press a controller button and tap Detect Controller.';
+  if(controllerManager.isAppleMobile)return'Pair the Nintendo controller in iPad Settings → Bluetooth. In this Safari tab, press a controller button, then tap Detect Controller.';
+  return'Press any controller button, then choose Detect Controller. Use Calibrate Left Stick if only the D-pad responds.';
+}
+function updateControllerDebug(force=false){
+  const now=performance.now();if(!force&&now-controllerManager.lastDebug<160)return;controllerManager.lastDebug=now;const pads=connectedGamepads(),live=qs('#controllerLive'),debug=qs('#controllerDebug');if(!live||!debug)return;
+  qs('#controllerHelp').textContent=controllerEnvironmentHelp();
+  if(!pads.length){live.textContent='No web controller detected. The controller may still be paired to the device, but Safari has not exposed it to this page.';debug.textContent=`Gamepad API: ${typeof navigator.getGamepads==='function'?'available':'unavailable'}\nSafari/iPad: ${controllerManager.isAppleMobile?'yes':'no'}\nStandalone/Home Screen: ${controllerManager.standalone?'yes':'no'}\nEmbedded page: ${controllerManager.framed?'yes':'no'}\nSecure page: ${window.isSecureContext?'yes':'no'}`;return}
+  live.textContent=`Detected ${pads.length} controller${pads.length===1?'':'s'}. Move the left stick and watch the X/Y values below.`;
+  debug.textContent=pads.map(p=>{const d=gamepadDirections(p),profile=controllerProfile(p);return[`Controller ${p.index}: ${p.id||'Unknown'}`,`Mapping: ${p.mapping||'non-standard'} | Buttons: ${p.buttons?.length||0} | Axes: ${p.axes?.length||0}`,`Left stick axes: ${d.xAxis}/${d.yAxis} | X ${d.x.toFixed(2)} | Y ${d.y.toFixed(2)}`,`D-pad: L${+gamepadButtonPressed(p,14)} R${+gamepadButtonPressed(p,15)} U${+gamepadButtonPressed(p,12)} D${+gamepadButtonPressed(p,13)}`,`Calibration: ${profile?'saved':'automatic'}`,`Raw axes: ${(p.axes||[]).map((v,i)=>`${i}:${Number(v).toFixed(2)}`).join('  ')}`].join('\n')}).join('\n\n');
+}
+function updateControllerStatus(){const pads=connectedGamepads();controllerMenuState.connected=!!pads.length;controllerStatus(pads.length?`🎮 ${pads.length} controller${pads.length===1?'':'s'} ready`:'🎮 Controller Setup',!!pads.length);updateControllerDebug()}
+function detectControllers(){const pads=connectedGamepads();updateControllerStatus();if(pads.length){controllerManager.activePadIndex=pads[0].index;toast(`${pads[0].id||'Controller'} detected`)}else toast(controllerManager.isAppleMobile?'Press a Nintendo controller button, then tap Detect Controller again':'No controller detected')}
+async function calibrateLeftStick(){
+  const pad=activeGamepads()[0];if(!pad){detectControllers();return}const live=qs('#controllerLive'),btn=qs('#calibrateControllerBtn');btn.disabled=true;btn.classList.add('controller-calibrating');
+  const sample=async(ms,label,exclude=-1)=>{live.textContent=label;const start=performance.now(),mins=[],maxs=[],sums=[],counts=[];while(performance.now()-start<ms){const fresh=connectedGamepads().find(p=>p.index===pad.index)||pad;for(let i=0;i<(fresh.axes?.length||0);i++){const v=axisValue(fresh,i);mins[i]=Math.min(mins[i]??v,v);maxs[i]=Math.max(maxs[i]??v,v);sums[i]=(sums[i]||0)+v;counts[i]=(counts[i]||0)+1}await new Promise(r=>requestAnimationFrame(r))}let best=-1,range=-1;for(let i=0;i<mins.length;i++){if(i===exclude)continue;const q=maxs[i]-mins[i];if(q>range){range=q;best=i}}return{axis:best,min:mins[best]||0,max:maxs[best]||0,avg:(sums[best]||0)/(counts[best]||1),allAvg:sums.map((v,i)=>(v||0)/(counts[i]||1))}};
+  live.textContent='Release the left stick and keep it centered…';await new Promise(r=>setTimeout(r,900));const centerPad=connectedGamepads().find(p=>p.index===pad.index)||pad,centers=(centerPad.axes||[]).map(Number);
+  const left=await sample(1800,'Hold the LEFT STICK fully LEFT…');const up=await sample(1800,'Now hold the LEFT STICK fully UP…',left.axis);
+  if(left.axis<0||up.axis<0||left.axis===up.axis){live.textContent='Calibration did not detect two changing axes. Try again and move only the left stick.'}
+  else{const fresh=connectedGamepads().find(p=>p.index===pad.index)||pad,leftValue=Math.abs(left.min-(centers[left.axis]||0))>Math.abs(left.max-(centers[left.axis]||0))?left.min:left.max,upValue=Math.abs(up.min-(centers[up.axis]||0))>Math.abs(up.max-(centers[up.axis]||0))?up.min:up.max;controllerManager.profiles[padKey(pad)]={xAxis:left.axis,yAxis:up.axis,xCenter:centers[left.axis]||0,yCenter:centers[up.axis]||0,xSign:leftValue<(centers[left.axis]||0)?1:-1,ySign:upValue<(centers[up.axis]||0)?1:-1};saveControllerProfiles();live.textContent=`Left stick calibrated on axes ${left.axis} and ${up.axis}. Move it now to verify.`;toast('Left stick calibration saved')}
+  btn.disabled=false;btn.classList.remove('controller-calibrating');updateControllerDebug(true);
+}
+function resetControllerCalibration(){const pad=activeGamepads()[0];if(pad)delete controllerManager.profiles[padKey(pad)];else controllerManager.profiles={};saveControllerProfiles();controllerManager.motion.clear();toast('Controller calibration reset');updateControllerDebug(true)}
+window.addEventListener('gamepadconnected',e=>{controllerManager.activePadIndex=e.gamepad?.index??controllerManager.activePadIndex;updateControllerStatus();toast(`${e.gamepad?.id||'Controller'} connected`)});
+window.addEventListener('gamepaddisconnected',()=>{controllerManager.activePadIndex=null;updateControllerStatus();toast('Controller disconnected')});
+qs('#controllerStatus')?.addEventListener('click',()=>{qs('#controllerHelp').textContent=controllerEnvironmentHelp();openDialog(controllerDialog);detectControllers();updateControllerDebug(true)});
+qs('#activateControllerBtn')?.addEventListener('click',detectControllers);qs('#calibrateControllerBtn')?.addEventListener('click',calibrateLeftStick);qs('#resetControllerBtn')?.addEventListener('click',resetControllerCalibration);
+for(const eventName of['pointerdown','touchstart','keydown'])window.addEventListener(eventName,()=>{connectedGamepads();updateControllerStatus()},{passive:true});
 function menuFocusable(){
   const scope=[...document.querySelectorAll('dialog[open]')].pop()||Object.values(views).find(v=>v.classList.contains('active'))||document.body;
-  return [...scope.querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"]),.game-card')].filter(el=>{
-    const r=el.getBoundingClientRect(),style=getComputedStyle(el);return style.display!=='none'&&style.visibility!=='hidden'&&r.width>0&&r.height>0;
-  });
+  return [...scope.querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"]),.game-card')].filter(el=>{const r=el.getBoundingClientRect(),style=getComputedStyle(el);return style.display!=='none'&&style.visibility!=='hidden'&&r.width>0&&r.height>0});
 }
 function focusMenuItem(direction){
-  const items=menuFocusable();if(!items.length)return;
-  const active=items.includes(document.activeElement)?document.activeElement:null;
-  if(!active){items[0].focus?.();return}
-  if(active.tagName==='SELECT'&&(direction==='left'||direction==='right')){
-    const delta=direction==='right'?1:-1,next=clamp(active.selectedIndex+delta,0,active.options.length-1);if(next!==active.selectedIndex){active.selectedIndex=next;active.dispatchEvent(new Event('change',{bubbles:true}))}return;
-  }
-  const a=active.getBoundingClientRect(),ax=a.left+a.width/2,ay=a.top+a.height/2;
-  let best=null,bestScore=Infinity;
-  for(const el of items){if(el===active)continue;const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,dx=x-ax,dy=y-ay;
-    const valid=direction==='left'?dx<-6:direction==='right'?dx>6:direction==='up'?dy<-6:dy>6;if(!valid)continue;
-    const primary=direction==='left'||direction==='right'?Math.abs(dx):Math.abs(dy),secondary=direction==='left'||direction==='right'?Math.abs(dy):Math.abs(dx),score=primary+secondary*2.2;
-    if(score<bestScore){best=el;bestScore=score}
-  }
+  const items=menuFocusable();if(!items.length)return;const active=items.includes(document.activeElement)?document.activeElement:null;if(!active){items[0].focus?.();return}
+  if(active.tagName==='SELECT'&&(direction==='left'||direction==='right')){const delta=direction==='right'?1:-1,next=clamp(active.selectedIndex+delta,0,active.options.length-1);if(next!==active.selectedIndex){active.selectedIndex=next;active.dispatchEvent(new Event('change',{bubbles:true}))}return}
+  const a=active.getBoundingClientRect(),ax=a.left+a.width/2,ay=a.top+a.height/2;let best=null,bestScore=Infinity;
+  for(const el of items){if(el===active)continue;const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,dx=x-ax,dy=y-ay,valid=direction==='left'?dx<-6:direction==='right'?dx>6:direction==='up'?dy<-6:dy>6;if(!valid)continue;const primary=direction==='left'||direction==='right'?Math.abs(dx):Math.abs(dy),secondary=direction==='left'||direction==='right'?Math.abs(dy):Math.abs(dx),score=primary+secondary*2.2;if(score<bestScore){best=el;bestScore=score}}
   (best||items[(items.indexOf(active)+(direction==='left'||direction==='up'?-1:1)+items.length)%items.length]).focus?.();
 }
-function closeTopControllerLayer(){
-  const open=[...document.querySelectorAll('dialog[open]')].pop();if(open){open.close();return}
-  if(views.game.classList.contains('active')&&!session?.running){exitGame();return}
-  if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur?.();
-}
-function menuButtonEdge(pad,index){const key=`${pad.index}:${index}`,pressed=!!pad.buttons[index]?.pressed,was=controllerMenuState.buttons.get(key)||false;controllerMenuState.buttons.set(key,pressed);return pressed&&!was}
+function closeTopControllerLayer(){const open=[...document.querySelectorAll('dialog[open]')].pop();if(open){open.close();return}if(views.game.classList.contains('active')&&!session?.running){exitGame();return}if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur?.()}
+function menuButtonEdge(pad,index){const key=`${pad.index}:${index}`,pressed=gamepadButtonPressed(pad,index),was=controllerMenuState.buttons.get(key)||false;controllerMenuState.buttons.set(key,pressed);return pressed&&!was}
 function pollControllerMenus(t){
-  const pads=connectedGamepads();
-  if(!session?.running&&pads.length){
-    const pad=pads[0],dir=gamepadDirections(pad);
-    const direction=dir.left?'left':dir.right?'right':dir.up?'up':dir.down?'down':'';
-    if(direction&&(direction!==controllerMenuState.direction||t>=controllerMenuState.nextMoveAt)){focusMenuItem(direction);controllerMenuState.nextMoveAt=t+(direction===controllerMenuState.direction?150:320)}
-    controllerMenuState.direction=direction;
-    if(menuButtonEdge(pad,0)){const el=document.activeElement;el?.click?.()}
-    if(menuButtonEdge(pad,1))closeTopControllerLayer();
-    if(menuButtonEdge(pad,9)&&views.game.classList.contains('active')&&session)session.togglePause();
-  }else{
-    controllerMenuState.direction='';
-    for(const pad of pads)for(const index of[0,1,9])controllerMenuState.buttons.set(`${pad.index}:${index}`,!!pad.buttons[index]?.pressed);
-  }
+  const pads=activeGamepads();updateControllerStatus();
+  if(!session?.running&&pads.length){const pad=pads[0],dir=gamepadDirections(pad),direction=dir.left?'left':dir.right?'right':dir.up?'up':dir.down?'down':'';if(direction&&(direction!==controllerMenuState.direction||t>=controllerMenuState.nextMoveAt)){focusMenuItem(direction);controllerMenuState.nextMoveAt=t+(direction===controllerMenuState.direction?150:320)}controllerMenuState.direction=direction;if(menuButtonEdge(pad,0)){const el=document.activeElement;el?.click?.()}if(menuButtonEdge(pad,1))closeTopControllerLayer();if(menuButtonEdge(pad,9)&&views.game.classList.contains('active')&&session)session.togglePause()}
+  else{controllerMenuState.direction='';for(const pad of pads)for(const index of[0,1,9])controllerMenuState.buttons.set(`${pad.index}:${index}`,gamepadButtonPressed(pad,index))}
   requestAnimationFrame(pollControllerMenus);
 }
 updateControllerStatus();requestAnimationFrame(pollControllerMenus);
@@ -256,7 +294,7 @@ function startGame(g,level,mode=null){
   const a=account();if(!a)return;const campaign=!!g.campaign&&g.levels>1;level=campaign?clamp(Number(level)||1,1,g.levels):1;mode=mode||(g.players===2?'2P':'1P');if(mode==='2P'&&!a.parental.multiplayer)return toast('Multiplayer is blocked by Parental Controls');
   const d=todayDaily(a);d.plays++;a.stats.plays++;const prog=a.progress[g.id]||(a.progress[g.id]={level:1,completedLevels:[],highScore:0,finished:false,plays:0,wins:0});prog.plays++;saveDB(db);
   currentGame=g;showView('game');qs('#gameTitle').textContent=g.name;qs('#gameLevelText').textContent=campaign?`Level ${level} of ${g.levels}`:(g.id==='drawing-studio'||g.id==='music-sequencer'?'Creative Mode':'Single Match');selectedGameMode=mode;configureControlDock(g);
-  qs('#gameInstructions').innerHTML=`<h3>${escapeHtml(g.name)} — Instructions</h3><p><b>Objective:</b> ${escapeHtml(objective(g))}</p><p><b>How to play:</b> ${escapeHtml(howTo(g))}</p><p><b>Computer controls:</b> ${escapeHtml(g.controls)}.</p><p><b>Touchscreen:</b> Use the fixed control dock at the bottom plus direct taps or drags on the game canvas where appropriate.</p><p><b>Gamepad:</b> Left stick/D-pad moves, A is the primary action, B is the secondary action, and Start pauses. For tap/drag games, use the right stick as a cursor and press X or the right trigger to click and drag.</p><p><b>Mode:</b> ${mode==='2P'?'Two players on this device':'Single player'}.</p><p><b>Game pace:</b> ${escapeHtml((a.settings.gamePace||'standard').replace(/^./,c=>c.toUpperCase()))}. Change it under Customize & Accessibility.</p><p><b>Rewards:</b> ${campaign?'1 AG Coin for each newly completed level and 5 bonus coins for finishing the campaign.':'1 AG Coin for a win and a one-time 5-coin first-win bonus.'}</p>`;
+  qs('#gameInstructions').innerHTML=`<h3>${escapeHtml(g.name)} — Instructions</h3><p><b>Objective:</b> ${escapeHtml(objective(g))}</p><p><b>How to play:</b> ${escapeHtml(howTo(g))}</p><p><b>Computer controls:</b> ${escapeHtml(g.controls)}.</p><p><b>Touchscreen:</b> Use the fixed control dock at the bottom plus direct taps or drags on the game canvas where appropriate.</p><p><b>Gamepad:</b> Left stick/D-pad moves, A is the primary action, B is the secondary action, and Start pauses. Open Controller Setup from the lower-right button to detect or calibrate a Nintendo controller. For tap/drag games, use the right stick as a cursor and press X or the right trigger to click and drag.</p><p><b>Mode:</b> ${mode==='2P'?'Two players on this device':'Single player'}.</p><p><b>Game pace:</b> ${escapeHtml((a.settings.gamePace||'standard').replace(/^./,c=>c.toUpperCase()))}. Change it under Customize & Accessibility.</p><p><b>Rewards:</b> ${campaign?'1 AG Coin for each newly completed level and 5 bonus coins for finishing the campaign.':'1 AG Coin for a win and a one-time 5-coin first-win bonus.'}</p>`;
   session=new GameSession(g,level,mode);session.start();
 }
 function exitGame(){if(session){session.stop();session=null}showView('launcher');refreshHeader();renderGames()}
@@ -291,7 +329,7 @@ class GameSession{
   drawGamepadPointer(){const p=this.gamepadPointer;if(!p.visible)return;const c=this.ctx;c.save();c.lineWidth=3;c.strokeStyle='#ffffff';c.fillStyle=p.down?'#ffdf5d':'#36ddff';c.beginPath();c.arc(p.x,p.y,p.down?11:9,0,Math.PI*2);c.fill();c.stroke();c.beginPath();c.moveTo(p.x-16,p.y);c.lineTo(p.x+16,p.y);c.moveTo(p.x,p.y-16);c.lineTo(p.x,p.y+16);c.stroke();c.restore()}
   pollGamepads(){
     if(this.completed||!this.running)return;
-    const pads=connectedGamepads();const desired=new Set();
+    const pads=activeGamepads();const desired=new Set();
     const mapPad=(pad,index)=>{if(!pad)return;const left=index===0?'ArrowLeft':'KeyA',right=index===0?'ArrowRight':'KeyD',up=index===0?'ArrowUp':'KeyW',down=index===0?'ArrowDown':'KeyS',a=index===0?'Space':'KeyF',b=index===0?'Enter':'KeyG',dir=gamepadDirections(pad);if(dir.left)desired.add(left);if(dir.right)desired.add(right);if(dir.up)desired.add(up);if(dir.down)desired.add(down);if(gamepadButtonPressed(pad,0))desired.add(a);if(gamepadButtonPressed(pad,1))desired.add(b);const start=gamepadButtonPressed(pad,9),old=!!this.prevGamepadButtons[`${pad.index}:start`];if(start&&!old)this.togglePause();this.prevGamepadButtons[`${pad.index}:start`]=start};
     mapPad(pads[0],0);if(this.mode==='2P'&&pads[1])mapPad(pads[1],1);this.pollGamepadPointer(pads[0]);
     for(const k of this.gamepadKeys)if(!desired.has(k))this.setKey(k,false);for(const k of desired)if(!this.gamepadKeys.has(k))this.setKey(k,true);this.gamepadKeys=desired;
@@ -303,11 +341,11 @@ class GameSession{
 }
 
 async function syncGameCatalog(){
-  try{const response=await fetch('./games.json?v=10.11',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
+  try{const response=await fetch('./games.json?v=11',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
 }
 if('serviceWorker'in navigator)window.addEventListener('load',async()=>{
-  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icon-512.png?v=10.11',{once:true});
-  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=10.11');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
+  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icon-512.png?v=11',{once:true});
+  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=11');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
   syncGameCatalog();
 });
 window.addEventListener('error',e=>{console.error(e.error||e.message);try{localStorage.setItem('asArcadeLastError',JSON.stringify({time:new Date().toISOString(),message:e.message,stack:e.error?.stack||''}))}catch{}});

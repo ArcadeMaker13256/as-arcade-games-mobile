@@ -9,20 +9,20 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="A's Arcade">
   <title>A's Arcade Games — GitHub Mobile Edition</title>
-  <link rel="manifest" href="manifest.webmanifest?v=10.11">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=10.11">
+  <link rel="manifest" href="manifest.webmanifest?v=11">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=11">
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-v10.png">
-  <link rel="stylesheet" href="styles.css?v=10.11">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
   <div id="toast" role="status" aria-live="polite"></div>
-  <div id="controllerStatus" class="controller-status" aria-live="polite">🎮 Connect a controller</div>
+  <button id="controllerStatus" class="controller-status" type="button" aria-live="polite" aria-haspopup="dialog">🎮 Controller Setup</button>
 
   <section id="authView" class="view active">
     <div class="auth-card glass">
-      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=10.11" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=10.11'">
+      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=11" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=11'">
       <h1>A's Arcade Games</h1>
-      <p class="subtitle">GitHub Mobile Edition 10.11 • Dino ducking update • Nintendo controls • Crossy quarter-speed</p>
+      <p class="subtitle">GitHub Mobile Edition 11 • 100-game upgrade • Nintendo/iPad controller setup • gameplay improvements</p>
       <div id="loginAvatarPreview" class="login-avatar-preview" aria-label="Selected player avatar"></div>
       <label>Player account
         <select id="accountSelect"></select>
@@ -65,7 +65,7 @@
 
     <main class="launcher-main">
       <div class="filters glass">
-        <input id="searchInput" type="search" placeholder="Search 75 games…" aria-label="Search games">
+        <input id="searchInput" type="search" placeholder="Search 100 games…" aria-label="Search games">
         <select id="categorySelect" aria-label="Game category"></select>
         <label class="check"><input id="favoritesOnly" type="checkbox"> Favorites</label>
       </div>
@@ -106,6 +106,21 @@
     <article id="gameInstructions" class="instructions glass"></article>
   </section>
 
+
+  <dialog id="controllerDialog" class="modal controller-dialog">
+    <button class="close-dialog" aria-label="Close">×</button>
+    <h2>Nintendo Controller Setup</h2>
+    <p id="controllerHelp">Pair the controller with this device, press a controller button, then choose Detect Controller.</p>
+    <div class="controller-actions">
+      <button id="activateControllerBtn" class="primary" type="button">Detect Controller</button>
+      <button id="calibrateControllerBtn" type="button">Calibrate Left Stick</button>
+      <button id="resetControllerBtn" type="button">Reset Calibration</button>
+    </div>
+    <div id="controllerLive" class="controller-live" aria-live="polite">No controller detected yet.</div>
+    <pre id="controllerDebug" class="controller-debug" aria-label="Controller input report"></pre>
+    <p class="small">On iPad, use the page in a normal Safari tab over HTTPS. A Home Screen web app or an embedded page may not expose the Gamepad API.</p>
+  </dialog>
+
   <dialog id="detailsDialog" class="modal">
     <button class="close-dialog" aria-label="Close">×</button>
     <div id="detailsContent"></div>
@@ -131,10 +146,11 @@
     <button id="saveAccountBtn" class="primary">Create Account</button>
   </dialog>
 
-  <script src="avatar.js?v=10.11"></script>
-  <script src="games.js?v=10.11"></script>
-  <script src="game-engines.js?v=10.11"></script>
-  <script src="extra-engines.js?v=10.11"></script>
-  <script src="app.js?v=10.11"></script>
+  <script src="avatar.js?v=11"></script>
+  <script src="games.js?v=11"></script>
+  <script src="game-engines.js?v=11"></script>
+  <script src="extra-engines.js?v=11"></script>
+  <script src="v11-engines.js?v=11"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
