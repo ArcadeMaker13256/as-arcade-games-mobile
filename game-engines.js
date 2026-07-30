@@ -66,12 +66,47 @@ function flappyGame(s){
 }
 
 function dinoGame(s){
-  const d={x:120,y:440,w:48,h:52,vy:0,duck:false};let obs=[],spawn=0,dist=0,target=14+Math.min(20,s.level);
-  return{keyDown(k){if((k==='Space'||k==='ArrowUp')&&d.y>=439)d.vy=-560},update(dt){d.duck=s.pressed('ArrowDown','KeyS');d.vy+=1250*dt;d.y+=d.vy*dt;if(d.y>440){d.y=440;d.vy=0}spawn-=dt;if(spawn<=0){const bird=Math.random()<.28;obs.push({x:W+20,y:bird?385:438,w:bird?52:30,h:bird?25:54,v:235+Math.min(125,s.level*3.1)});spawn=rand(1.0,1.65)}for(const o of obs)o.x-=o.v*dt;const box={x:d.x,y:d.duck?d.y+24:d.y,w:d.w,h:d.duck?28:d.h};if(obs.some(o=>hit(box,o)))return failLevel(dist*100);obs=obs.filter(o=>o.x>-80);dist+=dt;if(dist>=target)completeLevel(dist*150)},draw(c){bg(c,'#f4e5c0');rect(c,0,492,W,48,'#bc8c50');rect(c,d.x,d.duck?d.y+24:d.y,d.w,d.duck?28:d.h,'#2c8752');for(const o of obs)rect(c,o.x,o.y,o.w,o.h,o.y<400?'#8a5e3c':'#2d9c52');txt(c,`Distance ${Math.floor(dist)}/${target}`,450,36,22,'#47351e')}}
+  const ground=492,d={x:120,y:440,w:48,h:52,vy:0,duck:false};let obs=[],spawn=0,dist=0,target=14+Math.min(20,s.level),lastType='cactus';
+  function jump(){if(d.y>=439&&!d.duck)d.vy=-560}
+  function spawnObstacle(){
+    // Low birds intersect the standing dinosaur but pass safely above its ducking hitbox.
+    const useBird=dist>2&&Math.random()<(lastType==='bird'?.18:.38);
+    if(useBird){obs.push({type:'bird',x:W+20,y:438,w:54,h:22,v:235+Math.min(125,s.level*3.1),wing:0});lastType='bird'}
+    else{obs.push({type:'cactus',x:W+20,y:438,w:30,h:54,v:235+Math.min(125,s.level*3.1)});lastType='cactus'}
+  }
+  return{
+    keyDown(k){if(k==='Space'||k==='ArrowUp'||k==='KeyW')jump();if((k==='ArrowDown'||k==='KeyS')&&d.y<439)d.vy=Math.max(d.vy,430)},
+    update(dt){
+      d.duck=s.pressed('ArrowDown','KeyS');
+      // Pressing down in the air creates a fast-drop, making duck controls useful and responsive.
+      if(d.duck&&d.y<439)d.vy=Math.max(d.vy,430);
+      d.vy+=1250*dt;d.y+=d.vy*dt;if(d.y>440){d.y=440;d.vy=0}
+      spawn-=dt;if(spawn<=0){spawnObstacle();spawn=rand(1.0,1.65)}
+      for(const o of obs){o.x-=o.v*dt;if(o.type==='bird')o.wing=(o.wing||0)+dt*12}
+      const box={x:d.x+4,y:d.duck?d.y+25:d.y+3,w:d.w-8,h:d.duck?25:d.h-5};
+      if(obs.some(o=>hit(box,{x:o.x+2,y:o.y+2,w:o.w-4,h:o.h-4})))return failLevel(dist*100);
+      obs=obs.filter(o=>o.x>-80);dist+=dt;if(dist>=target)completeLevel(dist*150)
+    },
+    draw(c){
+      bg(c,'#f4e5c0');rect(c,0,ground,W,H-ground,'#bc8c50');
+      // Dinosaur body visibly crouches while Down/S is held.
+      rect(c,d.x,d.duck?d.y+25:d.y,d.w,d.duck?27:d.h,'#2c8752');
+      for(const o of obs){
+        if(o.type==='bird'){
+          rect(c,o.x+9,o.y+6,36,14,'#8a5e3c');
+          const flap=Math.sin(o.wing||0)>0?0:7;
+          rect(c,o.x,o.y+flap,20,7,'#6f482d');rect(c,o.x+34,o.y+flap,20,7,'#6f482d');
+        }else rect(c,o.x,o.y,o.w,o.h,'#2d9c52')
+      }
+      txt(c,`Distance ${Math.floor(dist)}/${target}`,450,36,22,'#47351e');
+      txt(c,'Up/Space: jump   •   Down: duck',450,68,17,'#47351e')
+    },
+    debugState(){return{duck:d.duck,dinoBox:{x:d.x+4,y:d.duck?d.y+25:d.y+3,w:d.w-8,h:d.duck?25:d.h-5},obstacles:obs.map(o=>({...o}))}}
+  }
 }
 
 function crossyGame(s){
-  const cell=54,p={x:8*cell+4,row:8},movers=[];let ended=false,won=false,grace=2.5;const progress=clamp((s.level-1)/39,0,1);for(let r=1;r<8;r++){const water=r===3||r===4,count=s.level<16?1:2,speed=(water?(8+r*.35+4*progress):(13+r*.55+7*progress))*.5,spacing=(W+620)/count;for(let i=0;i<count;i++)movers.push({row:r,x:i*spacing+rand(30,180),w:water?250:58,v:speed*(r%2?1:-1),water})}
+  const cell=54,p={x:8*cell+4,row:8},movers=[];let ended=false,won=false,grace=2.5;const progress=clamp((s.level-1)/39,0,1);for(let r=1;r<8;r++){const water=r===3||r===4,count=s.level<16?1:2,speed=(water?(8+r*.35+4*progress):(13+r*.55+7*progress))*.125,spacing=(W+620)/count;for(let i=0;i<count;i++)movers.push({row:r,x:i*spacing+rand(30,180),w:water?250:58,v:speed*(r%2?1:-1),water})}
   function freeze(){movers.forEach(o=>o.v=0)}function lose(){if(ended||won||s.completed)return;ended=true;freeze();failLevel(0)}function move(k){if(ended||won||s.completed)return;const d=keyDirection(k);if(!d)return;p.x=clamp(p.x+d[0]*cell,4,W-48);p.row=clamp(p.row+d[1],0,8);grace=Math.max(grace,.42);if(p.row===0){won=true;ended=true;freeze();completeLevel(2000+s.level*25)}}
   return{keyDown:move,pointer(q,t){if(t!=='pointerdown'||ended||won)return;const dx=q.x-(p.x+22),dy=q.y-(55+p.row*cell+27);move(Math.abs(dx)>Math.abs(dy)?(dx>0?'ArrowRight':'ArrowLeft'):(dy>0?'ArrowDown':'ArrowUp'))},update(dt){if(ended||won||s.completed)return;grace=Math.max(0,grace-dt);for(const o of movers)o.x=(o.x+o.v*dt+W+420)%(W+420)-210;const y=55+p.row*cell,box={x:p.x,y:y+5,w:44,h:44},lane=movers.filter(o=>o.row===p.row);if(!lane.length)return;const water=lane[0].water,carrier=lane.find(o=>hit(box,{x:o.x,y:55+o.row*cell+5,w:o.w,h:44}));if(water){if(carrier){p.x+=carrier.v*dt;if(p.x<-45||p.x>W+5)lose()}else if(grace<=0)lose()}else if(grace<=0&&carrier)lose()},draw(c){bg(c,'#98dc89');for(let r=1;r<8;r++){const water=r===3||r===4;rect(c,0,55+r*cell,W,cell,water?'#3b9ed2':'#424957');if(!water){c.strokeStyle='#d4d9e2';c.setLineDash([20,20]);c.beginPath();c.moveTo(0,55+(r+.5)*cell);c.lineTo(W,55+(r+.5)*cell);c.stroke();c.setLineDash([])}}for(const o of movers)rect(c,o.x,55+o.row*cell+5,o.w,44,o.water?'#9c6b3f':o.v>0?'#ff5c71':'#4cd7ff');rect(c,p.x,55+p.row*cell+5,44,44,grace>0?'#fff29a':'#ffe45e');txt(c,ended?'Stopped — restarting at Level 1':grace>1?`Get ready… ${grace.toFixed(1)}`:`Reach the top • Level ${s.level}/40`,450,37,22,'#16361d')},debugState(){return{ended,velocities:movers.map(o=>({water:o.water,v:o.v}))}},debugForceLose(){lose()}}
 }
