@@ -3,7 +3,7 @@
 function createGameEngine(session){
   const factories={
     snake:snakeGame,brick:brickGame,pong:pongGame,invaders:invadersGame,asteroids:asteroidsGame,
-    flappy:flappyGame,dino:dinoGame,crossy:crossyGame,pacmaze:pacMazeGame,tetris:tetrisGame,
+    flappy:flappyGame,dino:dinoGame,skylinerescue:skylineRescueGame,pacmaze:pacMazeGame,tetris:tetrisGame,
     merge2048:merge2048Game,memory:memoryGame,lights:lightsGame,mines:minesGame,sudoku:sudokuGame,
     tictactoe:ticTacToeGame,connect4:connectFourGame,reversi:reversiGame,checkers:checkersGame,
     battleship:battleshipGame,simon:simonGame,whack:whackGame,bubble:bubbleGame,
@@ -107,10 +107,54 @@ function dinoGame(s){
   }
 }
 
-function crossyGame(s){
-  const cell=54,p={x:8*cell+4,row:8},movers=[];let ended=false,won=false,grace=2.5;const progress=clamp((s.level-1)/39,0,1);for(let r=1;r<8;r++){const water=r===3||r===4,count=s.level<16?1:2,speed=(water?(8+r*.35+4*progress):(13+r*.55+7*progress))*.125,spacing=(W+620)/count;for(let i=0;i<count;i++)movers.push({row:r,x:i*spacing+rand(30,180),w:water?250:58,v:speed*(r%2?1:-1),water})}
-  function freeze(){movers.forEach(o=>o.v=0)}function lose(){if(ended||won||s.completed)return;ended=true;freeze();failLevel(0)}function move(k){if(ended||won||s.completed)return;const d=keyDirection(k);if(!d)return;p.x=clamp(p.x+d[0]*cell,4,W-48);p.row=clamp(p.row+d[1],0,8);grace=Math.max(grace,.42);if(p.row===0){won=true;ended=true;freeze();completeLevel(2000+s.level*25)}}
-  return{keyDown:move,pointer(q,t){if(t!=='pointerdown'||ended||won)return;const dx=q.x-(p.x+22),dy=q.y-(55+p.row*cell+27);move(Math.abs(dx)>Math.abs(dy)?(dx>0?'ArrowRight':'ArrowLeft'):(dy>0?'ArrowDown':'ArrowUp'))},update(dt){if(ended||won||s.completed)return;grace=Math.max(0,grace-dt);for(const o of movers)o.x=(o.x+o.v*dt+W+420)%(W+420)-210;const y=55+p.row*cell,box={x:p.x,y:y+5,w:44,h:44},lane=movers.filter(o=>o.row===p.row);if(!lane.length)return;const water=lane[0].water,carrier=lane.find(o=>hit(box,{x:o.x,y:55+o.row*cell+5,w:o.w,h:44}));if(water){if(carrier){p.x+=carrier.v*dt;if(p.x<-45||p.x>W+5)lose()}else if(grace<=0)lose()}else if(grace<=0&&carrier)lose()},draw(c){bg(c,'#98dc89');for(let r=1;r<8;r++){const water=r===3||r===4;rect(c,0,55+r*cell,W,cell,water?'#3b9ed2':'#424957');if(!water){c.strokeStyle='#d4d9e2';c.setLineDash([20,20]);c.beginPath();c.moveTo(0,55+(r+.5)*cell);c.lineTo(W,55+(r+.5)*cell);c.stroke();c.setLineDash([])}}for(const o of movers)rect(c,o.x,55+o.row*cell+5,o.w,44,o.water?'#9c6b3f':o.v>0?'#ff5c71':'#4cd7ff');rect(c,p.x,55+p.row*cell+5,44,44,grace>0?'#fff29a':'#ffe45e');txt(c,ended?'Stopped — restarting at Level 1':grace>1?`Get ready… ${grace.toFixed(1)}`:`Reach the top • Level ${s.level}/40`,450,37,22,'#16361d')},debugState(){return{ended,velocities:movers.map(o=>({water:o.water,v:o.v}))}},debugForceLose(){lose()}}
+function skylineRescueGame(s){
+  const rng=seedForLevel(s,711),buildings=[],survivors=[];
+  const width=95,gap=15,startX=14,target=3+Math.min(3,Math.floor((s.level-1)/8));
+  for(let i=0;i<8;i++){
+    const height=i===0?86:seededInt(rng,105,245+Math.min(45,s.level));
+    buildings.push({x:startX+i*(width+gap),y:H-height,w:width,h:height,base:i===0});
+  }
+  const choices=[2,3,4,5,6,7];
+  for(let i=choices.length-1;i>0;i--){const j=seededInt(rng,0,i);[choices[i],choices[j]]=[choices[j],choices[i]]}
+  for(const index of choices.slice(0,target)){const b=buildings[index];survivors.push({building:index,x:b.x+b.w/2,y:b.y-10,picked:false,delivered:false})}
+  const base=buildings[0],heli={x:base.x+base.w/2-28,y:base.y-62,w:56,h:26};
+  let carried=null,delivered=0,fuel=72+target*15,time=0,actionReady=true;
+  function closeToRoof(b){const cx=heli.x+heli.w/2,bx=b.x+b.w/2,feet=heli.y+heli.h;return Math.abs(cx-bx)<62&&Math.abs(feet-(b.y-8))<48}
+  function action(){
+    if(!actionReady)return;actionReady=false;
+    if(carried){
+      if(closeToRoof(base)){carried.delivered=true;carried=null;delivered++;if(delivered>=target)completeLevel(Math.max(500,Math.round(fuel*35+s.level*40)))}
+      return;
+    }
+    const q=survivors.find(person=>!person.picked&&!person.delivered&&closeToRoof(buildings[person.building]));
+    if(q){q.picked=true;carried=q}
+  }
+  function collision(){const box={x:heli.x+5,y:heli.y+4,w:heli.w-10,h:heli.h-6};return buildings.some(b=>box.x<b.x+b.w-5&&box.x+box.w>b.x+5&&box.y+box.h>b.y+4)}
+  return{
+    keyDown(k){if(k==='Space'||k==='Enter')action()},
+    keyUp(k){if(k==='Space'||k==='Enter')actionReady=true},
+    update(dt){
+      time+=dt;let dx=0,dy=0;if(s.pressed('ArrowLeft','KeyA'))dx--;if(s.pressed('ArrowRight','KeyD'))dx++;if(s.pressed('ArrowUp','KeyW'))dy--;if(s.pressed('ArrowDown','KeyS'))dy++;
+      const length=Math.hypot(dx,dy)||1,speed=225;heli.x+=dx/length*speed*dt;heli.y+=dy/length*speed*dt;
+      const wind=Math.sin(time*.8+s.level)*Math.min(18,3+s.level*.35);heli.x+=wind*dt;
+      heli.x=clamp(heli.x,2,W-heli.w-2);heli.y=clamp(heli.y,58,H-heli.h-8);
+      fuel-=dt*(dx||dy?1.18:.52);
+      if(collision()||fuel<=0)return failLevel(delivered*500);
+    },
+    draw(c){
+      bg(c,'#72c8f1');
+      circle(c,110,105,38,'#ffe27a');
+      for(let i=0;i<9;i++){const x=(i*127+time*9)%1020-60;circle(c,x,92+(i%3)*28,18,'#eaf8ff');circle(c,x+22,92+(i%3)*28,25,'#eaf8ff')}
+      rect(c,0,H-32,W,32,'#24445b');
+      for(const b of buildings){rect(c,b.x,b.y,b.w,b.h,b.base?'#2e8f76':'#344d70','#172b43');for(let y=b.y+24;y<H-42;y+=34)for(let x=b.x+14;x<b.x+b.w-12;x+=28)rect(c,x,y,12,17,(x+y)%3?'#ffd76a':'#8ed8ff');if(b.base){rect(c,b.x+10,b.y-8,b.w-20,10,'#f6f8ff');txt(c,'RESCUE BASE',b.x+b.w/2,b.y+26,12,'#fff')}}
+      for(const person of survivors){if(person.delivered||person.picked)continue;txt(c,'🧍',person.x,person.y,25)}
+      if(carried)txt(c,'🧍',heli.x+heli.w/2,heli.y+heli.h+18,20);
+      c.save();c.translate(heli.x,heli.y);rect(c,0,8,48,18,'#ff5f66','#7c2634');rect(c,42,13,18,7,'#ffcf56');rect(c,8,4,24,10,'#dff8ff');rect(c,18,0,4,8,'#263447');c.strokeStyle='#263447';c.lineWidth=4;c.beginPath();c.moveTo(-12,0);c.lineTo(52,0);c.stroke();c.beginPath();c.moveTo(11,28);c.lineTo(46,28);c.stroke();c.restore();
+      txt(c,`Rescued ${delivered}/${target} • Fuel ${Math.max(0,Math.ceil(fuel))}`,450,34,21,'#17334d');
+      txt(c,carried?'Return to the RESCUE BASE and press action':'Hover over a survivor and press action',450,61,16,'#17334d');
+    },
+    debugState(){return{delivered,target,fuel,carried:!!carried,buildings:buildings.length,survivors:survivors.length}}
+  }
 }
 
 function pacMazeGame(s){

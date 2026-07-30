@@ -9,10 +9,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="A's Arcade">
   <title>A's Arcade Games — GitHub Mobile Edition</title>
-  <link rel="manifest" href="manifest.webmanifest?v=11">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=11">
+  <link rel="manifest" href="manifest.webmanifest?v=11.3">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=11.3">
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-v10.png">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=11.3">
 </head>
 <body>
   <div id="toast" role="status" aria-live="polite"></div>
@@ -20,9 +20,9 @@
 
   <section id="authView" class="view active">
     <div class="auth-card glass">
-      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=11" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=11'">
+      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=11.3" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=11.3'">
       <h1>A's Arcade Games</h1>
-      <p class="subtitle">GitHub Mobile Edition 11 • 100-game upgrade • Nintendo/iPad controller setup • gameplay improvements</p>
+      <p class="subtitle">GitHub Mobile Edition 11.3 • controller fixes • reliable mobile install help • 100 games</p>
       <div id="loginAvatarPreview" class="login-avatar-preview" aria-label="Selected player avatar"></div>
       <label>Player account
         <select id="accountSelect"></select>
@@ -58,6 +58,7 @@
         <button data-panel="leaderboardPanel">Leaderboards</button>
         <button data-panel="settingsPanel">Customize</button>
         <button data-panel="parentPanel">Parental Controls</button>
+        <button id="launcherInstallBtn" class="hidden" type="button">Add to Home Screen</button>
         <button id="websiteBtn" class="website-button" type="button">Feedback & Requests</button>
         <button id="logoutBtn">Log Out</button>
       </nav>
@@ -107,18 +108,27 @@
   </section>
 
 
+
+  <dialog id="installDialog" class="modal install-dialog">
+    <button class="close-dialog" aria-label="Close">×</button>
+    <h2>Add A’s Arcade to the Home Screen</h2>
+    <div id="installHelpBody"></div>
+  </dialog>
+
   <dialog id="controllerDialog" class="modal controller-dialog">
     <button class="close-dialog" aria-label="Close">×</button>
     <h2>Nintendo Controller Setup</h2>
     <p id="controllerHelp">Pair the controller with this device, press a controller button, then choose Detect Controller.</p>
     <div class="controller-actions">
-      <button id="activateControllerBtn" class="primary" type="button">Detect Controller</button>
-      <button id="calibrateControllerBtn" type="button">Calibrate Left Stick</button>
+      <button id="activateControllerBtn" class="primary" type="button">Start Safari Scan</button>
+      <button id="standardControllerBtn" type="button">Use Standard L Stick (0/1)</button>
+      <button id="calibrateControllerBtn" type="button">Guided L-Stick Calibration</button>
       <button id="resetControllerBtn" type="button">Reset Calibration</button>
     </div>
+    <a id="openDirectControllerLink" class="primary controller-direct-link hidden" target="_top" rel="noopener">Open Arcade Directly</a>
     <div id="controllerLive" class="controller-live" aria-live="polite">No controller detected yet.</div>
     <pre id="controllerDebug" class="controller-debug" aria-label="Controller input report"></pre>
-    <p class="small">On iPad, use the page in a normal Safari tab over HTTPS. A Home Screen web app or an embedded page may not expose the Gamepad API.</p>
+    <p class="small"><b>Windows/Chrome:</b> choose “Use Standard L Stick (0/1)” if the R stick moves the game. <b>iPad/Safari:</b> verify the controller appears in Settings → General → Game Controller, open the site directly in Safari, tap Start Safari Scan, and press a controller button repeatedly.</p>
   </dialog>
 
   <dialog id="detailsDialog" class="modal">
@@ -146,11 +156,11 @@
     <button id="saveAccountBtn" class="primary">Create Account</button>
   </dialog>
 
-  <script src="avatar.js?v=11"></script>
-  <script src="games.js?v=11"></script>
-  <script src="game-engines.js?v=11"></script>
-  <script src="extra-engines.js?v=11"></script>
-  <script src="v11-engines.js?v=11"></script>
-  <script src="app.js?v=11"></script>
+  <script src="avatar.js?v=11.3"></script>
+  <script src="games.js?v=11.3"></script>
+  <script src="game-engines.js?v=11.3"></script>
+  <script src="extra-engines.js?v=11.3"></script>
+  <script src="v11-engines.js?v=11.3"></script>
+  <script src="app.js?v=11.3"></script>
 </body>
 </html>

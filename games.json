@@ -102,16 +102,16 @@
     "campaign": true
   },
   {
-    "id": "crossy-street",
-    "name": "Crossy Street",
-    "description": "Cross traffic lanes and rivers one step at a time.",
+    "id": "skyline-rescue",
+    "name": "Skyline Rescue",
+    "description": "Pilot a rescue helicopter between rooftops before fuel runs out.",
     "category": "Adventure",
-    "engine": "crossy",
+    "engine": "skylinerescue",
     "levels": 40,
     "players": 1,
-    "controls": "Arrow keys / WASD",
-    "objective": "Reach the far side safely.",
-    "howTo": "Move one tile per press. Avoid cars; on river lanes, stand on moving logs instead of water.",
+    "controls": "Arrow keys / WASD / L stick / D-pad • Space rescue",
+    "objective": "Pick up every rooftop survivor and return each one to the rescue base.",
+    "howTo": "Fly above the skyline, hover close to a survivor and press the action button to pick them up. Return to the marked base and press action again. Avoid buildings and conserve fuel.",
     "new": true,
     "campaign": true
   },

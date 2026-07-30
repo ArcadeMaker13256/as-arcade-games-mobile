@@ -47,3 +47,11 @@
 
 /* Version 11 controller setup and diagnostics */
 .controller-status{pointer-events:auto;cursor:pointer;font:inherit}.controller-dialog{max-width:min(680px,calc(100vw - 24px))}.controller-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.controller-live{padding:12px;border:1px solid var(--border);border-radius:12px;background:#071329aa;margin:10px 0}.controller-debug{max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-word;background:#050b18;color:#cce8ff;border:1px solid #ffffff22;border-radius:12px;padding:10px;font-size:.76rem;line-height:1.35}.controller-calibrating{animation:controllerPulse 1s infinite alternate}@keyframes controllerPulse{from{box-shadow:0 0 0 0 #58dfff55}to{box-shadow:0 0 0 8px #58dfff00}}
+
+/* Version 11.1 Safari controller connection */
+.controller-direct-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin:2px 0 8px}.controller-direct-link.hidden{display:none}
+
+/* Version 11.3 Nintendo L-stick, launcher, install, and universal game input */
+.game-card.controller-focused{outline:4px solid var(--accent);outline-offset:4px}
+
+.install-steps{display:grid;gap:10px;padding-left:1.4rem;line-height:1.45}.install-dialog b{color:var(--accent)}
