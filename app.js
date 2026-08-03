@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION='11.6-web';
+const APP_VERSION='11.7-web';
 const DB_KEY='asArcadeMobileDB';
 const AVATARS=AVATAR_PRESETS.map(p=>p.id);
 const THEMES=['neon','sunset','forest','royal','sky','candy','ocean','lava','mint','galaxy','retro','midnight','sports','creative','cozy','cyber','desert','ice','rainbow','monochrome','custom'];
@@ -129,7 +129,7 @@ window.addEventListener('keydown',e=>{if(session){if(['ArrowUp','ArrowDown','Arr
 window.addEventListener('keyup',e=>session&&session.setKey(e.code,false));
 
 const controllerMenuState={buttons:new Map(),direction:'',nextMoveAt:0,connected:false};
-const CONTROLLER_PREFS_KEY='as-arcade-controller-v11-6';
+const CONTROLLER_PREFS_KEY='as-arcade-controller-v11-7';
 function readControllerPrefs(){try{return JSON.parse(localStorage.getItem(CONTROLLER_PREFS_KEY)||'{}')||{}}catch{return{}}}
 const savedControllerPrefs=readControllerPrefs();
 const controllerManager={
@@ -138,9 +138,10 @@ const controllerManager={
   standalone:window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true,
   framed:window.top!==window.self,
   joyConMode:savedControllerPrefs.joyConMode==='separate'?'separate':'combined',
+  joyConOrientation:['auto','rails-top','rails-bottom','vertical'].includes(savedControllerPrefs.joyConOrientation)?savedControllerPrefs.joyConOrientation:'auto',
   stickDeadZone:.24,rightAxisPairs:new Map()
 };
-function saveControllerPrefs(){try{localStorage.setItem(CONTROLLER_PREFS_KEY,JSON.stringify({joyConMode:controllerManager.joyConMode}))}catch{}}
+function saveControllerPrefs(){try{localStorage.setItem(CONTROLLER_PREFS_KEY,JSON.stringify({joyConMode:controllerManager.joyConMode,joyConOrientation:controllerManager.joyConOrientation}))}catch{}}
 function controllerStatus(text,connected=false){const el=qs('#controllerStatus');if(!el)return;el.textContent=text;el.classList.toggle('connected',connected)}
 function gamepadGetter(){
   if(typeof navigator.getGamepads==='function')return navigator.getGamepads.bind(navigator);
@@ -152,37 +153,94 @@ function connectedGamepads(){const pads=rawGamepads();if(pads.length&&controller
 function gamepadButtonPressed(pad,index){const b=pad?.buttons?.[index];if(typeof b==='number')return b>.5;return !!(b&&(b.pressed||Number(b.value||0)>.5))}
 function axisValue(pad,index){const value=Number(pad?.axes?.[index]);return Number.isFinite(value)?value:0}
 function isJoyCon(pad){return /joy[- ]?con/i.test(String(pad?.id||''))}
-function joyConSide(pad){const id=String(pad?.id||'');if(/joy[- ]?con.*(?:\(\s*l\s*\)|\bleft\b|\bl\b)|(?:\(\s*l\s*\)|\bleft\b).*joy[- ]?con/i.test(id))return'L';if(/joy[- ]?con.*(?:\(\s*r\s*\)|\bright\b|\br\b)|(?:\(\s*r\s*\)|\bright\b).*joy[- ]?con/i.test(id))return'R';return''}
+function joyConKind(pad){
+  const id=String(pad?.id||'').toLowerCase().replace(/[_-]+/g,' ');
+  if(!/joy\s*con/.test(id))return'';
+  if(/(?:l\s*\+\s*r|l\s*\/\s*r|left\s*\+\s*right|left\s*\/\s*right|pair|paired|combined|composite|charging\s*grip)/.test(id))return'PAIR';
+  if(/joy\s*con\s*\(\s*l\s*\)|joy\s*con\s+l(?:eft)?\b|\bleft\s+joy\s*con\b/.test(id))return'L';
+  if(/joy\s*con\s*\(\s*r\s*\)|joy\s*con\s+r(?:ight)?\b|\bright\s+joy\s*con\b/.test(id))return'R';
+  if((pad?.axes?.length||0)>=4)return'PAIR';
+  return'';
+}
+function joyConSide(pad){const kind=joyConKind(pad);return kind==='L'||kind==='R'?kind:''}
+function isCombinedJoyConDevice(pad){return joyConKind(pad)==='PAIR'}
 function rawButton(pad,index){return gamepadButtonPressed(pad,index)}
 function makeButtons(states={}){return Array.from({length:20},(_,i)=>{const pressed=!!states[i];return{pressed,touched:pressed,value:pressed?1:0}})}
-function rotateJoyConStick(pad){const x=axisValue(pad,0),y=axisValue(pad,1),side=joyConSide(pad);if(side==='L')return{x:y,y:-x,available:true,source:'Joy-Con L sideways'};if(side==='R')return{x:-y,y:x,available:true,source:'Joy-Con R sideways'};return{x,y,available:true,source:'Joy-Con stick'}}
+function cloneButtons(pad,length=20){const source=Array.from(pad?.buttons||[]);return Array.from({length:Math.max(length,source.length)},(_,i)=>{const b=source[i];if(typeof b==='number')return{pressed:b>.5,touched:b>.05,value:Number(b)||0};return{pressed:!!b?.pressed,touched:!!(b?.touched||b?.pressed),value:Number(b?.value||0)}})}
+function rawStick(pad,pair=[0,1]){return{x:axisValue(pad,pair[0]),y:axisValue(pad,pair[1]),available:(pad?.axes?.length||0)>Math.max(...pair)}}
+function rotateNativeJoyConStick(stick,side,orientation='rails-top'){
+  const x=stick.x||0,y=stick.y||0;if(orientation==='vertical'||!side)return{x,y,available:stick.available,source:'Joy-Con native vertical'};
+  const top=orientation!=='rails-bottom';
+  if(side==='L')return top?{x:y,y:-x,available:stick.available,source:'Joy-Con L sideways'}:{x:-y,y:x,available:stick.available,source:'Joy-Con L sideways reversed'};
+  return top?{x:-y,y:x,available:stick.available,source:'Joy-Con R sideways'}:{x:y,y:-x,available:stick.available,source:'Joy-Con R sideways reversed'};
+}
+function unrotateStandardJoyConStick(stick,side){
+  const x=stick.x||0,y=stick.y||0;
+  if(side==='L')return{x:-y,y:x,available:stick.available,source:'Joy-Con L combined/vertical'};
+  if(side==='R')return{x:y,y:-x,available:stick.available,source:'Joy-Con R combined/vertical'};
+  return{x,y,available:stick.available,source:'Joy-Con vertical'};
+}
+function separateJoyConStick(pad,side=joyConSide(pad),pair=[0,1]){
+  const stick=rawStick(pad,pair),orientation=controllerManager.joyConOrientation==='auto'?'rails-top':controllerManager.joyConOrientation;
+  // Chromium and other standards-compliant browsers already rotate a single
+  // Joy-Con into the Standard Gamepad horizontal layout. Do not rotate twice.
+  if(pad?.mapping==='standard'){
+    if(orientation==='rails-bottom')return{x:-stick.x,y:-stick.y,available:stick.available,source:`Joy-Con ${side||''} browser-horizontal (rails bottom)`};
+    if(orientation==='vertical')return unrotateStandardJoyConStick(stick,side);
+    return{x:stick.x,y:stick.y,available:stick.available,source:`Joy-Con ${side||''} browser-horizontal`};
+  }
+  return rotateNativeJoyConStick(stick,side,orientation);
+}
+function combinedJoyConComponentStick(pad,side=joyConSide(pad),pair=[0,1]){
+  const stick=rawStick(pad,pair);
+  // A standalone Joy-Con with standard mapping is browser-rotated for sideways
+  // use. Undo that rotation when Left + Right are used together vertically.
+  return pad?.mapping==='standard'?unrotateStandardJoyConStick(stick,side):{...stick,source:`Joy-Con ${side||''} native combined`};
+}
 function joyConActionButtons(pad){return{
   0:rawButton(pad,0)||rawButton(pad,1),1:rawButton(pad,2)||rawButton(pad,3),
   2:rawButton(pad,4)||rawButton(pad,5),3:rawButton(pad,6)||rawButton(pad,7),
   9:rawButton(pad,8)||rawButton(pad,9)||rawButton(pad,10)||rawButton(pad,11)
 }}
-function makeSeparateJoyCon(pad){const stick=rotateJoyConStick(pad),states=joyConActionButtons(pad);return{
+function combinedRightActionButtons(pad){
+  if(pad?.mapping==='standard'&&joyConSide(pad)==='R')return{0:rawButton(pad,2),1:rawButton(pad,0),2:rawButton(pad,3),3:rawButton(pad,1),4:rawButton(pad,4),5:rawButton(pad,5),7:rawButton(pad,7),9:rawButton(pad,9)||rawButton(pad,8)};
+  return joyConActionButtons(pad)
+}
+function makeSeparateJoyCon(pad){const side=joyConSide(pad),stick=separateJoyConStick(pad,side),buttons=pad.mapping==='standard'?cloneButtons(pad):makeButtons(joyConActionButtons(pad));return{
   id:`${pad.id||'Joy-Con'} — Separate Player`,index:`joy-${pad.index}`,mapping:'standard',connected:true,timestamp:pad.timestamp||performance.now(),
-  axes:[stick.x,stick.y,0,0],buttons:makeButtons(states),_leftStick:stick,_rightStick:{x:0,y:0,available:false,source:'none'},_forcedDpad:{left:false,right:false,up:false,down:false},_physicalIndexes:[pad.index],_joyConSeparate:true,_joyConSide:joyConSide(pad)
+  axes:[stick.x,stick.y,0,0],buttons,_leftStick:stick,_rightStick:{x:0,y:0,available:false,source:'none'},_forcedDpad:pad.mapping==='standard'?physicalDpad(pad):{left:false,right:false,up:false,down:false},_physicalIndexes:[pad.index],_joyConSeparate:true,_joyConSide:side
 }}
 function physicalDpad(pad){const hat=hatDirections(pad);return{left:rawButton(pad,14)||hat.left,right:rawButton(pad,15)||hat.right,up:rawButton(pad,12)||hat.up,down:rawButton(pad,13)||hat.down}}
+function combinedLeftDpad(left){if(left?.mapping==='standard'&&joyConSide(left)==='L')return{left:rawButton(left,0),right:rawButton(left,3),up:rawButton(left,2),down:rawButton(left,1)};return physicalDpad(left)}
 function makeCombinedJoyCons(left,right){
-  const leftStick={x:axisValue(left,0),y:axisValue(left,1),available:(left.axes?.length||0)>=2,source:'Joy-Con L'};
-  const rightStick={x:axisValue(right,0),y:axisValue(right,1),available:(right.axes?.length||0)>=2,source:'Joy-Con R'};
-  const states=joyConActionButtons(right),start=rawButton(left,8)||rawButton(left,9)||rawButton(right,8)||rawButton(right,9)||rawButton(left,10)||rawButton(right,10);states[9]=states[9]||start;
-  const d=physicalDpad(left);return{
+  const leftStick=combinedJoyConComponentStick(left,'L'),rightStick=combinedJoyConComponentStick(right,'R');
+  const states=combinedRightActionButtons(right),start=rawButton(left,8)||rawButton(left,9)||rawButton(right,8)||rawButton(right,9)||rawButton(left,10)||rawButton(right,10);states[9]=states[9]||start;
+  const d=combinedLeftDpad(left);return{
     id:'Joy-Con Pair — Combined Controller',index:`joypair-${left.index}-${right.index}`,mapping:'standard',connected:true,timestamp:Math.max(left.timestamp||0,right.timestamp||0),
     axes:[leftStick.x,leftStick.y,rightStick.x,rightStick.y],buttons:makeButtons(states),_leftStick:leftStick,_rightStick:rightStick,_forcedDpad:d,_physicalIndexes:[left.index,right.index],_joyConPair:true
   }
+}
+function makeCombinedJoyConDevice(pad){
+  const leftStick={...rawStick(pad,[0,1]),source:'Joy-Con pair L stick'},rightStick=(pad.axes?.length||0)>=4?{...rawStick(pad,[2,3]),source:'Joy-Con pair R stick'}:{x:0,y:0,available:false,source:'none'};
+  return{id:`${pad.id||'Joy-Con L+R'} — Combined Controller`,index:`joypair-${pad.index}`,mapping:'standard',connected:true,timestamp:pad.timestamp||performance.now(),axes:[leftStick.x,leftStick.y,rightStick.x,rightStick.y],buttons:cloneButtons(pad),_leftStick:leftStick,_rightStick:rightStick,_forcedDpad:physicalDpad(pad),_physicalIndexes:[pad.index],_joyConPair:true,_joyConCombinedDevice:true}
+}
+function splitCombinedJoyConDevice(pad){
+  const orientation=controllerManager.joyConOrientation==='auto'?'rails-top':controllerManager.joyConOrientation;
+  const leftStick=rotateNativeJoyConStick(rawStick(pad,[0,1]),'L',orientation),rightStick=rotateNativeJoyConStick(rawStick(pad,[2,3]),'R',orientation);
+  const leftStates={0:rawButton(pad,14),1:rawButton(pad,13),2:rawButton(pad,12),3:rawButton(pad,15),9:rawButton(pad,8)};
+  const rightStates={0:rawButton(pad,1),1:rawButton(pad,3),2:rawButton(pad,0),3:rawButton(pad,2),9:rawButton(pad,9)};
+  const base=(side,stick,states)=>({id:`${pad.id||'Joy-Con L+R'} — ${side==='L'?'Left':'Right'} Separate Player`,index:`joysplit-${side.toLowerCase()}-${pad.index}`,mapping:'standard',connected:true,timestamp:pad.timestamp||performance.now(),axes:[stick.x,stick.y,0,0],buttons:makeButtons(states),_leftStick:stick,_rightStick:{x:0,y:0,available:false,source:'none'},_forcedDpad:{left:false,right:false,up:false,down:false},_physicalIndexes:[pad.index],_joyConSeparate:true,_joyConSide:side,_joyConSplitDevice:true});
+  return[base('L',leftStick,leftStates),base('R',rightStick,rightStates)]
 }
 function logicalGamepads(){
   const physical=connectedGamepads();if(!physical.length)return[];const used=new Set(),logical=[];
   for(let i=0;i<physical.length;i++){
     const pad=physical[i];if(used.has(pad))continue;
     if(!isJoyCon(pad)){logical.push(pad);used.add(pad);continue}
+    if(isCombinedJoyConDevice(pad)){if(controllerManager.joyConMode==='separate')logical.push(...splitCombinedJoyConDevice(pad));else logical.push(makeCombinedJoyConDevice(pad));used.add(pad);continue}
     if(controllerManager.joyConMode==='separate'){logical.push(makeSeparateJoyCon(pad));used.add(pad);continue}
-    const side=joyConSide(pad),mate=physical.find(other=>other!==pad&&!used.has(other)&&isJoyCon(other)&&(!side||!joyConSide(other)||joyConSide(other)!==side));
-    if(mate){const left=side==='L'?pad:joyConSide(mate)==='L'?mate:side==='R'?mate:pad,right=left===pad?mate:pad;logical.push(makeCombinedJoyCons(left,right));used.add(pad);used.add(mate)}
+    const side=joyConSide(pad),mate=physical.find(other=>other!==pad&&!used.has(other)&&isJoyCon(other)&&!isCombinedJoyConDevice(other)&&joyConSide(other)&&joyConSide(other)!==side);
+    if(mate){const left=side==='L'?pad:mate,right=side==='R'?pad:mate;logical.push(makeCombinedJoyCons(left,right));used.add(pad);used.add(mate)}
     else{logical.push(makeSeparateJoyCon(pad));used.add(pad)}
   }
   return logical;
@@ -229,13 +287,14 @@ function controllerEnvironmentHelp(){
 function updateControllerDebug(force=false){
   const now=performance.now();if(!force&&now-controllerManager.lastDebug<180)return;controllerManager.lastDebug=now;const physical=connectedGamepads(),pads=playerGamepads(),live=qs('#controllerLive'),debug=qs('#controllerDebug');if(!live||!debug)return;
   const help=qs('#controllerHelp');if(help)help.textContent=controllerEnvironmentHelp();const direct=qs('#openDirectControllerLink');if(direct){direct.href=location.href;direct.classList.toggle('hidden',!controllerManager.framed&&gamepadPermissionAllowed()!==false)}
-  const mode=qs('#joyConModeSelect');if(mode&&mode.value!==controllerManager.joyConMode)mode.value=controllerManager.joyConMode;
-  if(!physical.length){const remaining=Math.max(0,Math.ceil((controllerManager.activationUntil-performance.now())/1000));live.textContent=remaining?`Controller scan active for ${remaining} more second${remaining===1?'':'s'}. Move a stick and press the D-pad or B/A buttons repeatedly.`:'No web controller detected yet.';debug.textContent=`Gamepad API: ${gamepadGetter()?'available':'unavailable'}\nAPI path: ${typeof navigator.getGamepads==='function'?'standard':typeof navigator.webkitGetGamepads==='function'?'WebKit fallback':'none'}\nPermission: ${gamepadPermissionAllowed()===false?'blocked':gamepadPermissionAllowed()===true?'allowed':'not reported'}\nSafari/iPad: ${controllerManager.isAppleMobile?'yes':'no'}\nHome Screen app: ${controllerManager.standalone?'yes':'no'}\nEmbedded: ${controllerManager.framed?'yes':'no'}\nSecure page: ${window.isSecureContext?'yes':'no'}\nJoy-Con mode: ${controllerManager.joyConMode}`;return}
+  const mode=qs('#joyConModeSelect');if(mode&&mode.value!==controllerManager.joyConMode)mode.value=controllerManager.joyConMode;const orientation=qs('#joyConOrientationSelect');if(orientation&&orientation.value!==controllerManager.joyConOrientation)orientation.value=controllerManager.joyConOrientation;
+  if(!physical.length){const remaining=Math.max(0,Math.ceil((controllerManager.activationUntil-performance.now())/1000));live.textContent=remaining?`Controller scan active for ${remaining} more second${remaining===1?'':'s'}. Move a stick and press the D-pad or B/A buttons repeatedly.`:'No web controller detected yet.';debug.textContent=`Gamepad API: ${gamepadGetter()?'available':'unavailable'}\nAPI path: ${typeof navigator.getGamepads==='function'?'standard':typeof navigator.webkitGetGamepads==='function'?'WebKit fallback':'none'}\nPermission: ${gamepadPermissionAllowed()===false?'blocked':gamepadPermissionAllowed()===true?'allowed':'not reported'}\nSafari/iPad: ${controllerManager.isAppleMobile?'yes':'no'}\nHome Screen app: ${controllerManager.standalone?'yes':'no'}\nEmbedded: ${controllerManager.framed?'yes':'no'}\nSecure page: ${window.isSecureContext?'yes':'no'}\nJoy-Con mode: ${controllerManager.joyConMode}
+Joy-Con orientation: ${controllerManager.joyConOrientation}`;return}
   const first=pads[0],left=gamepadStick(first,'left'),right=gamepadRightStick(first),d=gamepadDirections(first);controllerManager.lastDetectedId=first.id||'Controller';
   const dirs=[d.left&&'LEFT',d.right&&'RIGHT',d.up&&'UP',d.down&&'DOWN'].filter(Boolean).join(' ')||'centered';live.textContent=`Connected: ${first.id||'Controller'}. Movement: ${dirs}. L ${left.x.toFixed(2)},${left.y.toFixed(2)} • R ${right.x.toFixed(2)},${right.y.toFixed(2)}`;
   const logicalSummary=pads.map((p,n)=>{const q=gamepadDirections(p),l=gamepadStick(p,'left'),r=gamepadRightStick(p),buttons=(p.buttons||[]).map((b,i)=>gamepadButtonPressed(p,i)?i:null).filter(i=>i!==null);return`Player controller ${n+1}: ${p.id||'Unknown'}\nL stick ${l.source}: ${l.x.toFixed(2)}, ${l.y.toFixed(2)}\nR stick ${r.source}: ${r.x.toFixed(2)}, ${r.y.toFixed(2)}\nMovement L${+q.left} R${+q.right} U${+q.up} D${+q.down}\nPressed buttons: ${buttons.join(', ')||'none'}`}).join('\n\n');
   const physicalSummary=physical.map((p,n)=>`Physical ${Number.isInteger(p.index)?p.index:n}: ${p.id||'Unknown'}\nMapping: ${p.mapping||'non-standard'} • Buttons: ${p.buttons?.length||0} • Axes: ${p.axes?.length||0}\nRaw axes: ${(p.axes||[]).map((v,i)=>`${i}:${Number(v).toFixed(2)}`).join('  ')||'none'}`).join('\n\n');
-  debug.textContent=`Joy-Con mode: ${controllerManager.joyConMode}\nPhysical devices: ${physical.length} • Player controllers: ${pads.length}\n\n${logicalSummary}\n\n--- Browser report ---\n${physicalSummary}`;
+  debug.textContent=`Joy-Con mode: ${controllerManager.joyConMode}\nJoy-Con orientation: ${controllerManager.joyConOrientation}\nPhysical devices: ${physical.length} • Player controllers: ${pads.length}\n\n${logicalSummary}\n\n--- Browser report ---\n${physicalSummary}`;
 }
 function updateControllerStatus(){const physical=connectedGamepads(),pads=playerGamepads();controllerMenuState.connected=!!physical.length;const label=physical.length?(physical.length!==pads.length?`🎮 ${physical.length} devices → ${pads.length} player controller${pads.length===1?'':'s'}`:`🎮 ${pads.length} controller${pads.length===1?'':'s'} ready`):'🎮 Enable Controller';controllerStatus(label,!!physical.length);updateControllerDebug()}
 function finishControllerScan(found){if(controllerManager.activationTimer){clearInterval(controllerManager.activationTimer);controllerManager.activationTimer=null}controllerManager.activationUntil=0;const button=qs('#activateControllerBtn');if(button){button.disabled=false;button.textContent='Enable Nintendo Controller'}if(found){const pads=connectedGamepads();if(pads[0])controllerManager.activePadIndex=Number.isInteger(pads[0].index)?pads[0].index:0;updateControllerStatus();toast(`${pads[0]?.id||'Controller'} connected — L stick moves, R stick aims`)}else{updateControllerDebug(true);toast('Safari did not expose the controller; touch controls remain available')}}
@@ -249,6 +308,7 @@ window.addEventListener('gamepadconnected',e=>{controllerManager.activePadIndex=
 window.addEventListener('gamepaddisconnected',()=>{controllerManager.activePadIndex=null;updateControllerStatus();toast('Controller disconnected')});
 qs('#controllerStatus')?.addEventListener('click',()=>{openDialog(controllerDialog);updateControllerDebug(true)});qs('#activateControllerBtn')?.addEventListener('click',detectControllers);
 const joyConModeSelect=qs('#joyConModeSelect');if(joyConModeSelect){joyConModeSelect.value=controllerManager.joyConMode;joyConModeSelect.addEventListener('change',()=>{controllerManager.joyConMode=joyConModeSelect.value==='separate'?'separate':'combined';saveControllerPrefs();controllerMenuState.buttons.clear();controllerManager.rightAxisPairs.clear();updateControllerStatus();toast(controllerManager.joyConMode==='separate'?'Joy-Cons will control separate players in multiplayer':'Left and Right Joy-Cons will work together as one controller')})}
+const joyConOrientationSelect=qs('#joyConOrientationSelect');if(joyConOrientationSelect){joyConOrientationSelect.value=controllerManager.joyConOrientation;joyConOrientationSelect.addEventListener('change',()=>{controllerManager.joyConOrientation=['auto','rails-top','rails-bottom','vertical'].includes(joyConOrientationSelect.value)?joyConOrientationSelect.value:'auto';saveControllerPrefs();controllerMenuState.buttons.clear();updateControllerStatus();toast(controllerManager.joyConOrientation==='auto'?'Joy-Con direction set to automatic browser mapping':`Joy-Con holding direction: ${joyConOrientationSelect.options[joyConOrientationSelect.selectedIndex]?.text||controllerManager.joyConOrientation}`)})}
 for(const eventName of['pointerdown','touchstart','click'])window.addEventListener(eventName,()=>{connectedGamepads();updateControllerStatus()},{passive:true});
 for(const eventName of['pageshow','focus'])window.addEventListener(eventName,updateControllerStatus);document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateControllerStatus()});
 window.addEventListener('keydown',event=>{
@@ -487,11 +547,11 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&session?.r
 window.addEventListener('beforeunload',()=>saveSessionCheckpoint('reload'));
 
 async function syncGameCatalog(){
-  try{const response=await fetch('./games.json?v=11.6',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
+  try{const response=await fetch('./games.json?v=11.7',{cache:'no-store'});if(!response.ok)return;const fresh=await response.json();if(!Array.isArray(fresh)||!fresh.length)return;const current=JSON.stringify(ARCADE_GAMES.map(g=>[g.id,g.name,g.engine,g.controls]));const next=JSON.stringify(fresh.map(g=>[g.id,g.name,g.engine,g.controls]));if(current!==next){ARCADE_GAMES.splice(0,ARCADE_GAMES.length,...fresh);if(activeAccountId){const selected=qs('#categorySelect').value;qs('#categorySelect').innerHTML='';renderLauncher();if([...qs('#categorySelect').options].some(o=>o.value===selected))qs('#categorySelect').value=selected;renderGames()}toast('The unique game catalog was refreshed')}}catch(error){console.warn('Catalog refresh skipped',error)}
 }
 if('serviceWorker'in navigator)window.addEventListener('load',async()=>{
-  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icon-512.png?v=11.6',{once:true});
-  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=11.6');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
+  const logo=qs('#mainLogo');if(logo&&!logo.complete)logo.addEventListener('error',()=>logo.src='./icon-512.png?v=11.7',{once:true});
+  try{const registration=await navigator.serviceWorker.register('./service-worker.js?v=11.7');await registration.update();let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}catch(error){console.warn(error)}
   syncGameCatalog();
 });
 window.addEventListener('error',e=>{console.error(e.error||e.message);try{localStorage.setItem('asArcadeLastError',JSON.stringify({time:new Date().toISOString(),message:e.message,stack:e.error?.stack||''}))}catch{}});

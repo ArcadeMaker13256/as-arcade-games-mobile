@@ -9,10 +9,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="A's Arcade">
   <title>A's Arcade Games — GitHub Mobile Edition</title>
-  <link rel="manifest" href="manifest.webmanifest?v=11.6">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=11.6">
+  <link rel="manifest" href="manifest.webmanifest?v=11.7">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=11.7">
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-v10.png">
-  <link rel="stylesheet" href="styles.css?v=11.6">
+  <link rel="stylesheet" href="styles.css?v=11.7">
 </head>
 <body>
   <div id="toast" role="status" aria-live="polite"></div>
@@ -20,9 +20,9 @@
 
   <section id="authView" class="view active">
     <div class="auth-card glass">
-      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=11.6" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=11.6'">
+      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=11.7" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=11.7'">
       <h1>A's Arcade Games</h1>
-      <p class="subtitle">GitHub Mobile Edition 11.6 • L/R sticks • selectable Joy-Con multiplayer • autosave • 100 games</p>
+      <p class="subtitle">GitHub Mobile Edition 11.7 • L/R sticks • selectable Joy-Con multiplayer • autosave • 100 games</p>
       <div id="loginAvatarPreview" class="login-avatar-preview" aria-label="Selected player avatar"></div>
       <label>Player account
         <select id="accountSelect"></select>
@@ -130,12 +130,20 @@
           <option value="separate">Use each Joy-Con as a separate player</option>
         </select>
       </label>
-      <p class="small">You can change this whenever you want. Separate mode works when the browser reports the Left and Right Joy-Cons as two devices. Hold each Joy-Con sideways with the SL/SR rail buttons on top.</p>
+      <label for="joyConOrientationSelect">Separate Joy-Con holding direction
+        <select id="joyConOrientationSelect">
+          <option value="auto">Automatic — recommended</option>
+          <option value="rails-top">Sideways — SL/SR rail buttons on top</option>
+          <option value="rails-bottom">Sideways — SL/SR rail buttons on bottom</option>
+          <option value="vertical">Vertical</option>
+        </select>
+      </label>
+      <p class="small">Automatic trusts the browser’s standard Joy-Con mapping and prevents double rotation. In Separate mode, hold each Joy-Con sideways. In Combined mode, hold both Joy-Cons vertically or place them in a grip.</p>
     </div>
     <a id="openDirectControllerLink" class="primary controller-direct-link hidden" target="_top" rel="noopener">Open Arcade Directly</a>
     <div id="controllerLive" class="controller-live" aria-live="polite">No controller detected yet.</div>
     <pre id="controllerDebug" class="controller-debug" aria-label="Controller input report"></pre>
-    <p class="small"><b>D-pad or L stick:</b> movement and menus. <b>R stick:</b> aiming or virtual cursor in compatible games. Safari must expose the controller after a user tap and controller input.</p>
+    <p class="small"><b>Combined mode:</b> Left Joy-Con stick moves and Right Joy-Con stick aims. <b>Separate mode:</b> each sideways Joy-Con controls one player. Use Automatic direction first; change the holding-direction option only if needed.</p>
   </dialog>
 
   <dialog id="detailsDialog" class="modal">
@@ -163,11 +171,11 @@
     <button id="saveAccountBtn" class="primary">Create Account</button>
   </dialog>
 
-  <script src="avatar.js?v=11.6"></script>
-  <script src="games.js?v=11.6"></script>
-  <script src="game-engines.js?v=11.6"></script>
-  <script src="extra-engines.js?v=11.6"></script>
-  <script src="v11-engines.js?v=11.6"></script>
-  <script src="app.js?v=11.6"></script>
+  <script src="avatar.js?v=11.7"></script>
+  <script src="games.js?v=11.7"></script>
+  <script src="game-engines.js?v=11.7"></script>
+  <script src="extra-engines.js?v=11.7"></script>
+  <script src="v11-engines.js?v=11.7"></script>
+  <script src="app.js?v=11.7"></script>
 </body>
 </html>
