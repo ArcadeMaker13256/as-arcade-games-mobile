@@ -1,8 +1,8 @@
 {
-  "name": "A's Arcade Games \u2014 Version 11.7",
-  "short_name": "A's Arcade V11.7",
-  "description": "100-game touch arcade with controls directly below a fully fitted game window, a true frozen 5-second countdown, open-ended Drawing Studio, controller and Joy-Con multiplayer support, autosave, and fullscreen.",
-  "start_url": "./?v=11.7",
+  "name": "A's Arcade Games \u2014 Version 12",
+  "short_name": "A's Arcade V12",
+  "description": "101-game touch arcade with full Chess, five bot difficulties, sound, richer visual themes, configurable countdowns, parental AG Coin controls, Joy-Con multiplayer, autosave, fullscreen, and distinct campaign levels.",
+  "start_url": "./?v=12.0",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -10,31 +10,31 @@
   "theme_color": "#09142f",
   "icons": [
     {
-      "src": "./icon-192.png?v=11.7",
+      "src": "./icon-192.png?v=12.0",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icon-512.png?v=11.7",
+      "src": "./icon-512.png?v=12.0",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./maskable-192.png?v=11.7",
+      "src": "./maskable-192.png?v=12.0",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "./maskable-512.png?v=11.7",
+      "src": "./maskable-512.png?v=12.0",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
-  "id": "./?app=as-arcade-v11-6",
+  "id": "./?app=as-arcade-v12",
   "display_override": [
     "fullscreen",
     "standalone",

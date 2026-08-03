@@ -89,3 +89,18 @@
 body:has(#gameView.active) .controller-status{bottom:10px}
 @media(max-width:720px){.game-view.active{padding-bottom:0!important}.canvas-wrap{margin-top:4px;margin-bottom:3px;max-width:calc(100% - 8px)}.canvas-wrap canvas,.game-overlay{border-radius:10px}.touch-controls{width:calc(100% - 8px);padding-top:4px;padding-bottom:calc(4px + env(safe-area-inset-bottom));gap:5px}.touch-hint{display:none}}
 @media(hover:hover) and (pointer:fine){.canvas-wrap{max-height:none}.canvas-wrap canvas{max-height:none}}
+
+
+/* Version 12 expanded graphic themes and animated-style backgrounds */
+.theme-volcano{--accent:#ffb000;--accent2:#ff3b3b;--card:#4a1c24;--panel:#2b1118;--bg:#12070a}
+.theme-underwater{--accent:#45f0db;--accent2:#3d82ff;--card:#103b57;--panel:#08273c;--bg:#03131f}
+.theme-storybook{--accent:#ffd36b;--accent2:#d68cff;--card:#533d69;--panel:#352947;--bg:#1d162b}
+.theme-matrix{--accent:#65ff7b;--accent2:#b4ff52;--card:#12351c;--panel:#082510;--bg:#020d05}
+.theme-sakura{--accent:#ff9bc8;--accent2:#bfa2ff;--card:#512f4b;--panel:#342339;--bg:#1d1424}
+.theme-sunrise{--accent:#ffe27a;--accent2:#ff7f72;--card:#563a56;--panel:#372840;--bg:#1c182a}
+.wallpaper-meteor-shower{background-image:linear-gradient(125deg,transparent 0 44%,#ffffff32 45% 46%,transparent 47% 100%),radial-gradient(circle at 15% 20%,#8ddcff55 0 2px,transparent 3px),radial-gradient(circle at 82% 35%,#fff2a855 0 2px,transparent 3px);background-size:140px 120px,80px 80px,110px 110px}
+.wallpaper-underwater-reef{background-image:radial-gradient(ellipse at 15% 100%,#24d3aa44 0 18%,transparent 19%),radial-gradient(ellipse at 75% 100%,#ff6fbd32 0 16%,transparent 17%),radial-gradient(circle at 40% 30%,#6ee7ff22 0 3px,transparent 4px);background-size:auto,auto,55px 55px}
+.wallpaper-pixel-castle{background-image:linear-gradient(90deg,#ffffff10 10%,transparent 10% 20%,#ffffff0a 20% 30%,transparent 30%),linear-gradient(0deg,#9c79ff15 25%,transparent 25% 75%,#55ddff12 75%);background-size:80px 80px,120px 120px}
+.wallpaper-sakura-fall{background-image:radial-gradient(ellipse at 20% 20%,#ff9bc855 0 4px,transparent 5px),radial-gradient(ellipse at 70% 40%,#ffd2e655 0 3px,transparent 4px),radial-gradient(ellipse at 45% 85%,#da9cff44 0 4px,transparent 5px);background-size:90px 120px,130px 150px,110px 140px}
+.wallpaper-circuit-rain{background-image:linear-gradient(90deg,transparent 48%,#5dff9b20 49% 51%,transparent 52%),linear-gradient(#5dff9b10 1px,transparent 1px),radial-gradient(circle,#aaffc922 2px,transparent 3px);background-size:36px 100%,36px 36px,72px 72px}
+.wallpaper-comic-burst{background-image:repeating-conic-gradient(from 12deg at 50% 50%,#ffdd5816 0 8deg,transparent 8deg 18deg),radial-gradient(circle at 50% 50%,#ff5d9a22,transparent 55%)}
