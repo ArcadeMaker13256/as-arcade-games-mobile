@@ -73,3 +73,19 @@
 .touch-controls.multiplayer .player-control-set{border:1px solid #ffffff24;border-radius:14px;padding:6px;background:#ffffff08}
 .touch-controls.multiplayer .p1-controls{border-color:#42dcff66}.touch-controls.multiplayer .p2-controls{border-color:#ff5e8666}
 @media(max-width:720px){.touch-controls.multiplayer{grid-template-columns:1fr 1fr}.touch-controls.multiplayer .player-control-set{display:grid;min-width:0}.touch-controls.multiplayer .dpad button{width:44px;height:42px}.touch-controls.multiplayer .mini-actions button{width:48px;height:42px}}
+
+/* Version 11.5 controller and Joy-Con options */
+.controller-settings{margin:12px 0;padding:12px;border:1px solid #ffffff26;border-radius:14px;background:#ffffff08}.controller-settings label{margin:0}.controller-settings .small{margin:8px 0 0}.controller-live{line-height:1.45}
+
+
+/* Version 11.6: controls directly below a fully visible game window */
+.game-view.active{height:100dvh;min-height:0;overflow:hidden;padding-bottom:0!important;display:flex;flex-direction:column}
+.game-header{flex:0 0 auto}
+.canvas-wrap{position:relative;flex:0 0 auto;min-width:0;min-height:0;margin:6px auto 4px;padding:0;max-width:calc(100% - 12px);max-height:none!important;display:block;overflow:hidden}
+.canvas-wrap canvas{display:block;width:100%;height:100%;max-width:none;max-height:none!important;aspect-ratio:auto;object-fit:contain;border-radius:16px}
+.game-overlay{inset:0;border-radius:16px}
+.touch-controls{position:relative;z-index:20;left:auto;right:auto;bottom:auto;flex:0 0 auto;width:min(calc(100% - 12px),1100px);max-width:1100px;margin:0 auto;padding:6px max(7px,env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-right));background:linear-gradient(180deg,#071329e8,#030817f5);border:1px solid #54deff55;border-radius:14px;box-shadow:0 6px 22px #0007;backdrop-filter:blur(12px)}
+.game-view.controls-hidden,.game-view.desktop-auto-hide,.controls-normal .game-view.active,.controls-large .game-view.active,.controls-xlarge .game-view.active{padding-bottom:0!important}
+body:has(#gameView.active) .controller-status{bottom:10px}
+@media(max-width:720px){.game-view.active{padding-bottom:0!important}.canvas-wrap{margin-top:4px;margin-bottom:3px;max-width:calc(100% - 8px)}.canvas-wrap canvas,.game-overlay{border-radius:10px}.touch-controls{width:calc(100% - 8px);padding-top:4px;padding-bottom:calc(4px + env(safe-area-inset-bottom));gap:5px}.touch-hint{display:none}}
+@media(hover:hover) and (pointer:fine){.canvas-wrap{max-height:none}.canvas-wrap canvas{max-height:none}}

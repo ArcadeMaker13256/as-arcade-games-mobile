@@ -315,7 +315,10 @@ function soccerGame(s){
 }
 
 function drawingGame(s){
-  let lines=[],last=null,color=0,width=7;const colors=['#1d9bf0','#ff4f79','#28b463','#f4b400','#8e44ad','#111'];return{pointer(p,t){if(t==='pointerdown')last={x:p.x,y:p.y};if(t==='pointermove'&&p.down&&last){lines.push({a:last,b:{x:p.x,y:p.y},color:colors[color],width});last={x:p.x,y:p.y};if(lines.length>=140)completeLevel(lines.length)}},pointerUp(){last=null},keyDown(k){if(k==='Space')color=(color+1)%colors.length;if(k==='Enter')lines=[];if(k==='ArrowUp')width=Math.min(20,width+1);if(k==='ArrowDown')width=Math.max(2,width-1)},draw(c){bg(c,'#f7f8fc');c.lineCap='round';for(const l of lines){c.strokeStyle=l.color;c.lineWidth=l.width;c.beginPath();c.moveTo(l.a.x,l.a.y);c.lineTo(l.b.x,l.b.y);c.stroke()}txt(c,`Color ${color+1}/${colors.length} • Brush ${width} • A color • B clear`,450,34,19,'#21304a')}}
+  let lines=[],last=null,color=0,width=7,strokeStart=0;const colors=['#1d9bf0','#ff4f79','#28b463','#f4b400','#8e44ad','#111'];
+  function clear(){lines=[];last=null;strokeStart=0}
+  function undo(){if(!lines.length)return;const stroke=lines[lines.length-1].stroke;while(lines.length&&lines[lines.length-1].stroke===stroke)lines.pop()}
+  return{pointer(p,t){if(t==='pointerdown'){last={x:p.x,y:p.y};strokeStart++}if(t==='pointermove'&&p.down&&last){lines.push({a:last,b:{x:p.x,y:p.y},color:colors[color],width,stroke:strokeStart});last={x:p.x,y:p.y};if(lines.length>12000)lines.splice(0,1000)}},pointerUp(){last=null},keyDown(k){if(k==='Space')color=(color+1)%colors.length;if(k==='Enter')clear();if(k==='Backspace')undo();if(k==='ArrowUp')width=Math.min(20,width+1);if(k==='ArrowDown')width=Math.max(2,width-1)},draw(c){bg(c,'#f7f8fc');c.lineCap='round';for(const l of lines){c.strokeStyle=l.color;c.lineWidth=l.width;c.beginPath();c.moveTo(l.a.x,l.a.y);c.lineTo(l.b.x,l.b.y);c.stroke()}txt(c,`Free Drawing • Color ${color+1}/${colors.length} • Brush ${width} • A color • B clear`,450,34,19,'#21304a')}}
 }
 
 function triviaGame(s){
