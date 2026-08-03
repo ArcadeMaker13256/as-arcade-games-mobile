@@ -51,7 +51,25 @@
 /* Version 11.1 Safari controller connection */
 .controller-direct-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin:2px 0 8px}.controller-direct-link.hidden{display:none}
 
-/* Version 11.3 Nintendo L-stick, launcher, install, and universal game input */
+/* Version 11.4 D-pad, launcher, install, autosave, and universal touch input */
 .game-card.controller-focused{outline:4px solid var(--accent);outline-offset:4px}
 
 .install-steps{display:grid;gap:10px;padding-left:1.4rem;line-height:1.45}.install-dialog b{color:var(--accent)}
+
+
+/* Version 11.4 gameplay and install improvements */
+#gameCanvas{touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none}
+.resume-saved{width:100%;margin:8px 0 14px;padding:14px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#071329;font-weight:900;border:0;border-radius:16px}
+.ready-card{text-align:center;min-width:min(360px,86vw)}
+.ready-card h2{font-size:clamp(2.2rem,8vw,4.6rem);margin:0 0 8px}
+.ready-card p{font-size:clamp(3rem,14vw,7rem);font-weight:950;margin:0;color:var(--accent)}
+.pause-card{max-width:680px;text-align:left;max-height:88vh;overflow:auto}
+.pause-card h2,.pause-card h3{text-align:center}
+.game-header-actions{flex-wrap:wrap}
+@media(max-width:700px){.game-header-actions button{padding:9px 10px;font-size:.85rem}.pause-card{font-size:.94rem}}
+
+/* Version 11.4.1 simultaneous two-player touchscreen controls */
+.touch-controls button.pressed,.touch-controls button:active{transform:scale(.93);filter:brightness(1.35);box-shadow:0 0 0 3px #fff8 inset,0 0 16px #43dcff88}
+.touch-controls.multiplayer .player-control-set{border:1px solid #ffffff24;border-radius:14px;padding:6px;background:#ffffff08}
+.touch-controls.multiplayer .p1-controls{border-color:#42dcff66}.touch-controls.multiplayer .p2-controls{border-color:#ff5e8666}
+@media(max-width:720px){.touch-controls.multiplayer{grid-template-columns:1fr 1fr}.touch-controls.multiplayer .player-control-set{display:grid;min-width:0}.touch-controls.multiplayer .dpad button{width:44px;height:42px}.touch-controls.multiplayer .mini-actions button{width:48px;height:42px}}

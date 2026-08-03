@@ -1,5 +1,5 @@
-const CACHE='as-arcade-mobile-v11-3';
-const CORE=['./','./index.html','./styles.css?v=11.3','./avatar.js?v=11.3','./games.js?v=11.3','./games.json?v=11.3','./game-engines.js?v=11.3','./extra-engines.js?v=11.3','./v11-engines.js?v=11.3','./app.js?v=11.3','./manifest.webmanifest?v=11.3','./arcade-logo.png?v=11.3','./favicon-32.png?v=11.3','./apple-touch-icon.png?v=11.3','./apple-touch-icon-v10.png?v=11.3','./icon-192.png?v=11.3','./icon-512.png?v=11.3','./maskable-192.png?v=11.3','./maskable-512.png?v=11.3'];
+const CACHE='as-arcade-mobile-v11-4-1';
+const CORE=['./','./index.html','./styles.css?v=11.4.1','./avatar.js?v=11.4.1','./games.js?v=11.4.1','./games.json?v=11.4.1','./game-engines.js?v=11.4.1','./extra-engines.js?v=11.4.1','./v11-engines.js?v=11.4.1','./app.js?v=11.4.1','./manifest.webmanifest?v=11.4.1','./arcade-logo.png?v=11.4.1','./favicon-32.png?v=11.4.1','./apple-touch-icon.png?v=11.4.1','./apple-touch-icon-v10.png?v=11.4.1','./icon-192.png?v=11.4.1','./icon-512.png?v=11.4.1','./maskable-192.png?v=11.4.1','./maskable-512.png?v=11.4.1'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{

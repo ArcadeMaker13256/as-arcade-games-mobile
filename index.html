@@ -9,10 +9,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="A's Arcade">
   <title>A's Arcade Games — GitHub Mobile Edition</title>
-  <link rel="manifest" href="manifest.webmanifest?v=11.3">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=11.3">
+  <link rel="manifest" href="manifest.webmanifest?v=11.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=11.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-v10.png">
-  <link rel="stylesheet" href="styles.css?v=11.3">
+  <link rel="stylesheet" href="styles.css?v=11.4.1">
 </head>
 <body>
   <div id="toast" role="status" aria-live="polite"></div>
@@ -20,9 +20,9 @@
 
   <section id="authView" class="view active">
     <div class="auth-card glass">
-      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=11.3" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=11.3'">
+      <img id="mainLogo" class="main-logo" src="./arcade-logo.png?v=11.4.1" alt="A's Arcade Games logo" width="500" height="500" onerror="this.onerror=null;this.src='./icon-512.png?v=11.4.1'">
       <h1>A's Arcade Games</h1>
-      <p class="subtitle">GitHub Mobile Edition 11.3 • controller fixes • reliable mobile install help • 100 games</p>
+      <p class="subtitle">GitHub Mobile Edition 11.4.1 • D-pad controller mode • autosave • full screen • 100 games</p>
       <div id="loginAvatarPreview" class="login-avatar-preview" aria-label="Selected player avatar"></div>
       <label>Player account
         <select id="accountSelect"></select>
@@ -35,7 +35,7 @@
         <button id="createBtn">Create Account</button>
         <button id="parentBtn">Parental Controls</button>
       </div>
-      <button id="installBtn" class="hidden">Install on Home Screen</button>
+      <button id="installBtn" class="hidden">Install Arcade App</button>
       <button id="authWebsiteBtn" class="website-button" type="button">Feedback and request simple games</button>
       <p class="small">Progress stays on this device. The app works offline after the first complete load.</p>
     </div>
@@ -58,7 +58,8 @@
         <button data-panel="leaderboardPanel">Leaderboards</button>
         <button data-panel="settingsPanel">Customize</button>
         <button data-panel="parentPanel">Parental Controls</button>
-        <button id="launcherInstallBtn" class="hidden" type="button">Add to Home Screen</button>
+        <button id="launcherInstallBtn" class="hidden" type="button">Install Arcade App</button>
+        <button id="fullscreenBtn" type="button">Full Screen</button>
         <button id="websiteBtn" class="website-button" type="button">Feedback & Requests</button>
         <button id="logoutBtn">Log Out</button>
       </nav>
@@ -70,6 +71,7 @@
         <select id="categorySelect" aria-label="Game category"></select>
         <label class="check"><input id="favoritesOnly" type="checkbox"> Favorites</label>
       </div>
+      <button id="resumeSavedBtn" class="resume-saved hidden" type="button"></button>
       <div class="summary-row"><span id="gameCount"></span><span id="dailySummary"></span></div>
       <div id="gameGrid" class="game-grid"></div>
     </main>
@@ -79,7 +81,7 @@
     <header class="game-header">
       <button id="backToLauncher">← Launcher</button>
       <div><h2 id="gameTitle">Game</h2><p id="gameLevelText">Level 1</p></div>
-      <div class="game-header-actions"><button id="controlsToggle" type="button">Touch Controls</button><button id="pauseBtn">Pause</button></div>
+      <div class="game-header-actions"><button id="gameFullscreenBtn" type="button">Full Screen</button><button id="controlsToggle" type="button">Touch Controls</button><button id="pauseBtn">Pause</button></div>
     </header>
     <div class="canvas-wrap">
       <canvas id="gameCanvas" width="900" height="540" aria-label="Game canvas"></canvas>
@@ -104,7 +106,6 @@
       </div>
       <div class="touch-hint">Touch, keyboard, and supported gamepads work together.</div>
     </div>
-    <article id="gameInstructions" class="instructions glass"></article>
   </section>
 
 
@@ -117,18 +118,15 @@
 
   <dialog id="controllerDialog" class="modal controller-dialog">
     <button class="close-dialog" aria-label="Close">×</button>
-    <h2>Nintendo Controller Setup</h2>
-    <p id="controllerHelp">Pair the controller with this device, press a controller button, then choose Detect Controller.</p>
+    <h2>Nintendo D-pad Setup</h2>
+    <p id="controllerHelp">Pair the Nintendo controller, tap Enable Controller, then press a D-pad direction or face button.</p>
     <div class="controller-actions">
-      <button id="activateControllerBtn" class="primary" type="button">Start Safari Scan</button>
-      <button id="standardControllerBtn" type="button">Use Standard L Stick (0/1)</button>
-      <button id="calibrateControllerBtn" type="button">Guided L-Stick Calibration</button>
-      <button id="resetControllerBtn" type="button">Reset Calibration</button>
+      <button id="activateControllerBtn" class="primary" type="button">Enable Nintendo Controller</button>
     </div>
     <a id="openDirectControllerLink" class="primary controller-direct-link hidden" target="_top" rel="noopener">Open Arcade Directly</a>
     <div id="controllerLive" class="controller-live" aria-live="polite">No controller detected yet.</div>
     <pre id="controllerDebug" class="controller-debug" aria-label="Controller input report"></pre>
-    <p class="small"><b>Windows/Chrome:</b> choose “Use Standard L Stick (0/1)” if the R stick moves the game. <b>iPad/Safari:</b> verify the controller appears in Settings → General → Game Controller, open the site directly in Safari, tap Start Safari Scan, and press a controller button repeatedly.</p>
+    <p class="small"><b>Controller movement uses only the D-pad.</b> The L stick and R stick are ignored. Safari must expose the controller to the page after a user tap and controller button press.</p>
   </dialog>
 
   <dialog id="detailsDialog" class="modal">
@@ -156,11 +154,11 @@
     <button id="saveAccountBtn" class="primary">Create Account</button>
   </dialog>
 
-  <script src="avatar.js?v=11.3"></script>
-  <script src="games.js?v=11.3"></script>
-  <script src="game-engines.js?v=11.3"></script>
-  <script src="extra-engines.js?v=11.3"></script>
-  <script src="v11-engines.js?v=11.3"></script>
-  <script src="app.js?v=11.3"></script>
+  <script src="avatar.js?v=11.4.1"></script>
+  <script src="games.js?v=11.4.1"></script>
+  <script src="game-engines.js?v=11.4.1"></script>
+  <script src="extra-engines.js?v=11.4.1"></script>
+  <script src="v11-engines.js?v=11.4.1"></script>
+  <script src="app.js?v=11.4.1"></script>
 </body>
 </html>
