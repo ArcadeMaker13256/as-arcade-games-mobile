@@ -15,17 +15,30 @@
   };
   globalThis.botModeLabel = session => botTuning(session).label;
 
+  const MUSIC_TRACKS = {
+    'arcade-pulse': {label:'Arcade Pulse',bpm:124,wave:'square',lead:[72,null,76,null,79,null,76,null,74,null,77,null,81,null,77,null],bass:[36,null,null,null,36,null,43,null,41,null,null,null,41,null,43,null],chord:[60,64,67],drums:'arcade'},
+    'pixel-quest': {label:'Pixel Quest',bpm:112,wave:'square',lead:[67,69,71,74,71,69,67,null,64,67,69,72,69,67,64,null],bass:[36,null,36,null,33,null,33,null,29,null,29,null,31,null,31,null],chord:[55,59,62],drums:'march'},
+    'neon-racer': {label:'Neon Racer',bpm:142,wave:'sawtooth',lead:[76,null,76,79,81,null,79,null,74,null,74,76,79,null,76,null],bass:[33,null,33,33,38,null,38,38,31,null,31,31,36,null,36,36],chord:[57,60,64],drums:'drive'},
+    'cosmic-drift': {label:'Cosmic Drift',bpm:88,wave:'sine',lead:[72,null,null,76,null,null,79,null,74,null,null,77,null,null,81,null],bass:[36,null,null,null,31,null,null,null,33,null,null,null,29,null,null,null],chord:[60,64,69],drums:'soft'},
+    'puzzle-garden': {label:'Puzzle Garden',bpm:96,wave:'triangle',lead:[69,null,72,null,76,null,72,null,67,null,71,null,74,null,71,null],bass:[41,null,null,null,38,null,null,null,36,null,null,null,40,null,null,null],chord:[57,60,64],drums:'soft'},
+    'sports-arena': {label:'Sports Arena',bpm:132,wave:'square',lead:[67,67,null,74,72,null,67,null,69,69,null,76,74,null,69,null],bass:[36,null,36,null,43,null,43,null,38,null,38,null,45,null,45,null],chord:[55,59,62],drums:'arena'},
+    'castle-steps': {label:'Castle Steps',bpm:104,wave:'triangle',lead:[64,67,69,71,72,71,69,67,62,64,67,69,71,69,67,64],bass:[36,null,43,null,41,null,38,null,33,null,40,null,38,null,35,null],chord:[52,55,59],drums:'march'},
+    'chill-clouds': {label:'Chill Clouds',bpm:76,wave:'sine',lead:[72,null,69,null,67,null,64,null,69,null,67,null,64,null,62,null],bass:[36,null,null,null,33,null,null,null,29,null,null,null,31,null,null,null],chord:[60,64,67],drums:'soft'}
+  };
+  globalThis.ARCADE_MUSIC_TRACKS = MUSIC_TRACKS;
+  const CATEGORY_MUSIC={Sports:'sports-arena',Racing:'neon-racer',Shooter:'neon-racer',Strategy:'castle-steps',Board:'castle-steps',Puzzle:'puzzle-garden',Word:'puzzle-garden',Learning:'puzzle-garden',Adventure:'pixel-quest',Simulation:'cosmic-drift',Creative:'chill-clouds',Music:'arcade-pulse',Casual:'chill-clouds',Arcade:'arcade-pulse',Multiplayer:'sports-arena',Cards:'castle-steps'};
+  const midiToHz=n=>440*Math.pow(2,(n-69)/12);
+
   class ArcadeAudio {
-    constructor(){this.ctx=null;this.master=null;this.last={};}
+    constructor(){this.ctx=null;this.master=null;this.musicBus=null;this.last={};this.scene='auth';this.sceneGame=null;this.musicTimer=null;this.musicStep=0;this.nextNoteTime=0;this.activeTrack='';this.previewUntil=0;this.generation=0;}
     settings(){
-      try { const s=account()?.settings||{}; return {on:s.sound!==false, volume:Math.max(0,Math.min(1,Number(s.volume??.7)))}; }
-      catch { return {on:true,volume:.7}; }
+      try { const s=account()?.settings||{}; return {on:s.sound!==false,volume:Math.max(0,Math.min(1,Number(s.volume??.7))),musicOn:s.music!==false,musicVolume:Math.max(0,Math.min(1,Number(s.musicVolume??.4))),musicTrack:s.musicTrack||'adaptive'}; }
+      catch { return {on:true,volume:.7,musicOn:false,musicVolume:.4,musicTrack:'adaptive'}; }
     }
     unlock(){
-      const set=this.settings(); if(!set.on)return;
       try{
-        if(!this.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;this.ctx=new C();this.master=this.ctx.createGain();this.master.gain.value=.18;this.master.connect(this.ctx.destination)}
-        if(this.ctx.state==='suspended')this.ctx.resume();
+        if(!this.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;this.ctx=new C();this.master=this.ctx.createGain();this.master.gain.value=.18;this.master.connect(this.ctx.destination);this.musicBus=this.ctx.createGain();this.musicBus.gain.value=0;this.musicBus.connect(this.ctx.destination)}
+        if(this.ctx.state==='suspended')this.ctx.resume().then(()=>this.refreshMusic()).catch(()=>{});else this.refreshMusic();
       }catch{}
     }
     tone(freq=440,duration=.08,type='sine',gain=.18,slide=0,delay=0){
@@ -56,10 +69,43 @@
         default: this.tone(300,.05,'sine',.06,60);
       }
     }
+    setScene(scene='launcher',game=null){this.scene=scene;this.sceneGame=game||null;this.previewUntil=0;this.refreshMusic(true);}
+    resolveTrack(requested){
+      if(requested&&requested!=='adaptive'&&MUSIC_TRACKS[requested])return requested;
+      const category=this.sceneGame?.category||'Arcade';return CATEGORY_MUSIC[category]||'arcade-pulse';
+    }
+    preview(track='adaptive',volume=.4){
+      this.unlock();if(!this.ctx)return;this.previewUntil=performance.now()+9000;this._startMusic(this.resolveTrack(track),Math.max(0,Math.min(1,Number(volume)||.4)),true);
+    }
+    refreshMusic(force=false){
+      if(!this.ctx||this.ctx.state!=='running')return;
+      const set=this.settings(),previewing=performance.now()<this.previewUntil;
+      if(document.hidden||(!previewing&&(this.scene==='auth'||!set.musicOn||set.musicVolume<=0))){this.stopMusic();return}
+      const id=previewing?this.activeTrack||this.resolveTrack(set.musicTrack):this.resolveTrack(set.musicTrack),vol=previewing?null:set.musicVolume;
+      if(force||!this.musicTimer||this.activeTrack!==id)this._startMusic(id,vol??set.musicVolume,false);else this._setMusicVolume(vol??set.musicVolume);
+    }
+    _setMusicVolume(volume){if(!this.ctx||!this.musicBus)return;const target=.22*Math.max(0,Math.min(1,Number(volume)||0));this.musicBus.gain.cancelScheduledValues(this.ctx.currentTime);this.musicBus.gain.setTargetAtTime(target,this.ctx.currentTime,.06);}
+    stopMusic(){
+      this.generation++;if(this.musicTimer){clearInterval(this.musicTimer);this.musicTimer=null}this.activeTrack='';if(this.ctx&&this.musicBus){this.musicBus.gain.cancelScheduledValues(this.ctx.currentTime);this.musicBus.gain.setTargetAtTime(0,this.ctx.currentTime,.04)}
+    }
+    _startMusic(trackId,volume=.4,isPreview=false){
+      if(!this.ctx||!this.musicBus||!MUSIC_TRACKS[trackId])return;this.generation++;if(this.musicTimer)clearInterval(this.musicTimer);this.activeTrack=trackId;this.musicStep=0;this.nextNoteTime=this.ctx.currentTime+.05;this._setMusicVolume(volume);const gen=this.generation;const tick=()=>{if(gen!==this.generation||!this.ctx)return;while(this.nextNoteTime<this.ctx.currentTime+.18){this._scheduleStep(MUSIC_TRACKS[trackId],this.musicStep,this.nextNoteTime);const stepDur=60/MUSIC_TRACKS[trackId].bpm/4;this.nextNoteTime+=stepDur;this.musicStep=(this.musicStep+1)%16}if(isPreview&&performance.now()>=this.previewUntil){this.previewUntil=0;this.refreshMusic(true)}};tick();this.musicTimer=setInterval(tick,30);
+    }
+    _musicTone(note,time,duration,wave='triangle',gain=.07,detune=0){
+      if(note==null||!this.ctx||!this.musicBus)return;const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=wave;o.frequency.setValueAtTime(midiToHz(note),time);o.detune.value=detune;g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(gain,time+.012);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(this.musicBus);o.start(time);o.stop(time+duration+.03);
+    }
+    _kick(time,gain=.16){if(!this.ctx||!this.musicBus)return;const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sine';o.frequency.setValueAtTime(130,time);o.frequency.exponentialRampToValueAtTime(48,time+.11);g.gain.setValueAtTime(gain,time);g.gain.exponentialRampToValueAtTime(.0001,time+.13);o.connect(g);g.connect(this.musicBus);o.start(time);o.stop(time+.14);}
+    _hat(time,gain=.045){if(!this.ctx||!this.musicBus)return;const len=Math.floor(this.ctx.sampleRate*.035),b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*(1-i/len);const src=this.ctx.createBufferSource(),filter=this.ctx.createBiquadFilter(),g=this.ctx.createGain();filter.type='highpass';filter.frequency.value=5200;g.gain.setValueAtTime(gain,time);g.gain.exponentialRampToValueAtTime(.0001,time+.035);src.buffer=b;src.connect(filter);filter.connect(g);g.connect(this.musicBus);src.start(time);}
+    _scheduleStep(track,step,time){
+      const stepDur=60/track.bpm/4,lead=track.lead[step],bass=track.bass[step];if(lead!=null)this._musicTone(lead,time,stepDur*.72,track.wave,.055);if(bass!=null)this._musicTone(bass,time,stepDur*.9,'triangle',.075);
+      if(step%4===0){const root=track.chord[(step/4)%track.chord.length];this._musicTone(root,time,stepDur*3.6,'sine',.018);this._musicTone(root+7,time,stepDur*3.6,'sine',.013)}
+      const d=track.drums;if(step%4===0||((d==='drive'||d==='arena')&&step%4===2))this._kick(time,d==='soft'?.075:.12);if(d!=='soft'&&step%2===1)this._hat(time,d==='drive'?.055:.035);if(d==='soft'&&step%4===2)this._hat(time,.018);if(d==='march'&&(step===4||step===12))this._hat(time,.05);
+    }
   }
   const audio=new ArcadeAudio();globalThis.ARCADE_AUDIO=audio;globalThis.arcadeSfx=(name,intensity)=>audio.play(name,intensity);
   window.addEventListener('pointerdown',()=>audio.unlock(),{once:false,passive:true});
   window.addEventListener('keydown',()=>audio.unlock(),{once:false});
+  document.addEventListener('visibilitychange',()=>audio.refreshMusic(true));
 
   function hashTextValue(text='') { let h=2166136261;for(const ch of String(text)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0; }
   globalThis.arcadeGameHue = id => hashTextValue(id)%360;
